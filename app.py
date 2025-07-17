@@ -7,6 +7,8 @@ from werkzeug.utils import secure_filename
 import pdfplumber
 from pdf2image import convert_from_path
 import pytesseract
+from quizpasa import handle_chat_message, get_welcome_message
+
 from docx import Document
 from pptx import Presentation
 import tempfile
@@ -717,6 +719,36 @@ def check_answer():
         'correct_answer': correct_answer
     })
 
+# Add this route to app.py (place it with your other routes)
+@app.route('/quizpasa_chat', methods=['POST'])
+def quizpasa_chat():
+    """Handle chatbot messages"""
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '').strip()
+        conversation_history = data.get('history', [])
+        
+        if not user_message:
+            return jsonify({
+                'success': False,
+                'error': 'No message provided'
+            }), 400
+        
+        # Handle special commands
+        if user_message.lower() in ['hi', 'hello', 'hey']:
+            response = get_welcome_message()
+        else:
+            # Get response from QuizPasa
+            response = handle_chat_message(user_message, conversation_history)
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'Sorry, I encountered an error. Please try again!',
+            'error': str(e)
+        }), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

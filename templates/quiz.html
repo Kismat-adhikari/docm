@@ -4,7 +4,303 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz - StudyPasa</title>
+    <!-- <link rel="stylesheet" href="style.css"> -->
     <style>
+        
+
+/* QuizPasa Floating Chatbot Styles */
+.quizpasa-container {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.quizpasa-mascot {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f46464, #ff7b7b);
+    border: 3px solid #fff;
+    box-shadow: 0 4px 20px rgba(244, 100, 100, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.quizpasa-mascot:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 25px rgba(244, 100, 100, 0.6);
+}
+
+.quizpasa-mascot img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.quizpasa-mascot::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+    top: 0;
+    left: 0;
+}
+
+.quizpasa-chatbox {
+    position: absolute;
+    bottom: 70px;
+    right: 0;
+    width: 350px;
+    height: 500px;
+    background: #1c1c1c;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    display: none;
+    flex-direction: column;
+    overflow: hidden;
+    border: 2px solid #f46464;
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.quizpasa-header {
+    background: linear-gradient(135deg, #f46464, #ff7b7b);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+}
+
+.quizpasa-title {
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.quizpasa-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+.quizpasa-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.quizpasa-messages {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    background: #1c1c1c;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.quizpasa-message {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.quizpasa-message.user {
+    background: #f46464;
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 6px;
+}
+
+.quizpasa-message.bot {
+    background: #2d2d2d;
+    color: white;
+    align-self: flex-start;
+    border-bottom-left-radius: 6px;
+    border: 1px solid #3d3d3d;
+}
+
+.quizpasa-input-container {
+    padding: 15px 20px;
+    background: #1c1c1c;
+    border-top: 1px solid #3d3d3d;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.quizpasa-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 1px solid #3d3d3d;
+    border-radius: 25px;
+    background: #2d2d2d;
+    color: white;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.quizpasa-input:focus {
+    border-color: #f46464;
+}
+
+.quizpasa-input::placeholder {
+    color: #888;
+}
+
+.quizpasa-send {
+    padding: 10px 15px;
+    background: #f46464;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+}
+
+.quizpasa-send:hover {
+    background: #e55454;
+    transform: scale(1.05);
+}
+
+.quizpasa-send:disabled {
+    background: #666;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.quizpasa-typing {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #888;
+    font-size: 0.8rem;
+    font-style: italic;
+    padding: 10px 16px;
+}
+
+.quizpasa-typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.quizpasa-typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #f46464;
+    animation: typingDot 1.5s infinite;
+}
+
+.quizpasa-typing-dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.quizpasa-typing-dot:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+@keyframes typingDot {
+    0%, 60%, 100% {
+        opacity: 0.3;
+        transform: scale(1);
+    }
+    30% {
+        opacity: 1;
+        transform: scale(1.2);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+    .quizpasa-chatbox {
+        width: 90vw;
+        height: 70vh;
+        right: 5vw;
+        bottom: 70px;
+    }
+    
+    .quizpasa-container {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    .quizpasa-mascot {
+        width: 55px;
+        height: 55px;
+    }
+    
+    .quizpasa-mascot img {
+        width: 45px;
+        height: 45px;
+    }
+}
+
+@media (max-width: 480px) {
+    .quizpasa-chatbox {
+        width: 95vw;
+        height: 75vh;
+        right: 2.5vw;
+        bottom: 65px;
+    }
+    
+    .quizpasa-messages {
+        padding: 15px;
+    }
+    
+    .quizpasa-input-container {
+        padding: 10px 15px;
+    }
+}
         * {
             margin: 0;
             padding: 0;
@@ -479,87 +775,272 @@
         </div>
     </div>
     
-    <script>
-        // Initialize variables
-        let score = 0;
-        const totalQuestions = parseInt('{{ mcqs|length }}');
-        const answeredQuestions = new Set();
+
+
+    <div class="quizpasa-container">
+    <!-- Floating Mascot Button -->
+    <div class="quizpasa-mascot" onclick="toggleQuizPasa()">
+        <img src="{{ url_for('static', filename='images/mr.pasa.png') }}" alt="QuizPasa" />
+    </div>
+    
+    <!-- Chatbox -->
+    <div class="quizpasa-chatbox" id="quizpasa-chatbox">
+        <div class="quizpasa-header">
+            <h3 class="quizpasa-title">QuizPasa</h3>
+            <button class="quizpasa-close" onclick="closeQuizPasa()">×</button>
+        </div>
         
-        // Handle option selection
-        document.querySelectorAll('.option-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const questionCard = this.closest('.question-card');
-                const questionIndex = parseInt(questionCard.dataset.questionIndex);
-                const selectedOption = parseInt(this.dataset.optionIndex);
-                const correctAnswer = parseInt(this.dataset.correctAnswer);
-                
-                // Prevent multiple answers for the same question
-                if (answeredQuestions.has(questionIndex)) {
-                    return;
-                }
-                
-                // Mark question as answered
-                answeredQuestions.add(questionIndex);
-                
-                // Disable all options in this question
-                questionCard.querySelectorAll('.option-btn').forEach(option => {
-                    option.disabled = true;
-                });
-                
-                // Show feedback
-                const isCorrect = selectedOption === correctAnswer;
-                showFeedback(questionCard, isCorrect, correctAnswer);
-                
-                // Update score
-                if (isCorrect) {
-                    score++;
-                    this.classList.add('correct');
-                } else {
-                    this.classList.add('incorrect');
-                    // Highlight correct answer
-                    questionCard.querySelectorAll('.option-btn')[correctAnswer].classList.add('correct');
-                }
-                
-                // Update score display
-                document.getElementById('score').textContent = score;
-            });
+        <div class="quizpasa-messages" id="quizpasa-messages">
+            <!-- Messages will be dynamically added here -->
+        </div>
+        
+        <div class="quizpasa-input-container">
+            <input 
+                type="text" 
+                class="quizpasa-input" 
+                id="quizpasa-input"
+                placeholder="Ask me anything about studying..."
+                onkeypress="handleQuizPasaKeyPress(event)"
+            />
+            <button class="quizpasa-send" onclick="sendQuizPasaMessage()">
+                ➤
+            </button>
+        </div>
+    </div>
+</div>
+
+ <script>
+// Initialize quiz variables
+let score = 0;
+const totalQuestions = parseInt('{{ mcqs|length }}');
+const answeredQuestions = new Set();
+
+// Initialize QuizPasa chatbot variables
+let quizPasaConversationHistory = [];
+let quizPasaIsOpen = false;
+
+// Quiz functionality
+document.querySelectorAll('.option-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const questionCard = this.closest('.question-card');
+        const questionIndex = parseInt(questionCard.dataset.questionIndex);
+        const selectedOption = parseInt(this.dataset.optionIndex);
+        const correctAnswer = parseInt(this.dataset.correctAnswer);
+        
+        // Prevent multiple answers for the same question
+        if (answeredQuestions.has(questionIndex)) {
+            return;
+        }
+        
+        // Mark question as answered
+        answeredQuestions.add(questionIndex);
+        
+        // Disable all options in this question
+        questionCard.querySelectorAll('.option-btn').forEach(option => {
+            option.disabled = true;
         });
         
-        function showFeedback(questionCard, isCorrect, correctAnswer) {
-            const feedback = questionCard.querySelector('.feedback');
-            const feedbackIcon = feedback.querySelector('.feedback-icon');
-            const feedbackText = feedback.querySelector('.feedback-text');
-            
-            if (isCorrect) {
-                feedbackIcon.textContent = '✅';
-                feedbackText.textContent = 'Correct!';
-                feedback.className = 'feedback correct';
-            } else {
-                feedbackIcon.textContent = '❌';
-                feedbackText.textContent = `Wrong! The correct answer is ${['A', 'B', 'C', 'D'][correctAnswer]}.`;
-                feedback.className = 'feedback incorrect';
-            }
-            
-            feedback.style.display = 'block';
+        // Show feedback
+        const isCorrect = selectedOption === correctAnswer;
+        showFeedback(questionCard, isCorrect, correctAnswer);
+        
+        // Update score
+        if (isCorrect) {
+            score++;
+            this.classList.add('correct');
+        } else {
+            this.classList.add('incorrect');
+            // Highlight correct answer
+            questionCard.querySelectorAll('.option-btn')[correctAnswer].classList.add('correct');
         }
         
-        function resetQuiz() {
-            score = 0;
-            answeredQuestions.clear();
-            document.getElementById('score').textContent = '0';
-            
-            // Reset all question cards
-            document.querySelectorAll('.question-card').forEach(card => {
-                // Re-enable all options
-                card.querySelectorAll('.option-btn').forEach(btn => {
-                    btn.disabled = false;
-                    btn.classList.remove('correct', 'incorrect');
-                });
-                
-                // Hide feedback
-                card.querySelector('.feedback').style.display = 'none';
-            });
+        // Update score display
+        document.getElementById('score').textContent = score;
+    });
+});
+
+function showFeedback(questionCard, isCorrect, correctAnswer) {
+    const feedback = questionCard.querySelector('.feedback');
+    const feedbackIcon = feedback.querySelector('.feedback-icon');
+    const feedbackText = feedback.querySelector('.feedback-text');
+    
+    if (isCorrect) {
+        feedbackIcon.textContent = '✅';
+        feedbackText.textContent = 'Correct!';
+        feedback.className = 'feedback correct';
+    } else {
+        feedbackIcon.textContent = '❌';
+        feedbackText.textContent = `Wrong! The correct answer is ${['A', 'B', 'C', 'D'][correctAnswer]}.`;
+        feedback.className = 'feedback incorrect';
+    }
+    
+    feedback.style.display = 'block';
+}
+
+function resetQuiz() {
+    score = 0;
+    answeredQuestions.clear();
+    document.getElementById('score').textContent = '0';
+    
+    // Reset all question cards
+    document.querySelectorAll('.question-card').forEach(card => {
+        // Re-enable all options
+        card.querySelectorAll('.option-btn').forEach(btn => {
+            btn.disabled = false;
+            btn.classList.remove('correct', 'incorrect');
+        });
+        
+        // Hide feedback
+        card.querySelector('.feedback').style.display = 'none';
+    });
+}
+
+// QuizPasa Chatbot functionality
+function toggleQuizPasa() {
+    const chatbox = document.getElementById('quizpasa-chatbox');
+    const isVisible = chatbox.style.display === 'flex';
+    
+    if (isVisible) {
+        closeQuizPasa();
+    } else {
+        openQuizPasa();
+    }
+}
+
+function openQuizPasa() {
+    const chatbox = document.getElementById('quizpasa-chatbox');
+    chatbox.style.display = 'flex';
+    quizPasaIsOpen = true;
+    
+    // Focus on input
+    document.getElementById('quizpasa-input').focus();
+    
+    // Add welcome message if this is the first time opening
+    if (quizPasaConversationHistory.length === 0) {
+        addQuizPasaMessage('Hi! I\'m QuizPasa, your friendly study assistant! 🎓\n\nI\'m here to help you with:\n• Study techniques and tips\n• Understanding your MCQs and flashcards\n• Learning strategies\n• Academic questions\n\nWhat would you like to know?', 'bot');
+    }
+}
+
+function closeQuizPasa() {
+    const chatbox = document.getElementById('quizpasa-chatbox');
+    chatbox.style.display = 'none';
+    quizPasaIsOpen = false;
+}
+
+function handleQuizPasaKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendQuizPasaMessage();
+    }
+}
+
+function addQuizPasaMessage(text, sender) {
+    const messagesContainer = document.getElementById('quizpasa-messages');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `quizpasa-message ${sender}`;
+    messageDiv.textContent = text;
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    // Store in conversation history
+    quizPasaConversationHistory.push({
+        role: sender === 'user' ? 'user' : 'assistant',
+        content: text
+    });
+    
+    // Keep only last 10 messages to prevent memory issues
+    if (quizPasaConversationHistory.length > 10) {
+        quizPasaConversationHistory = quizPasaConversationHistory.slice(-10);
+    }
+}
+
+function showQuizPasaTyping() {
+    const messagesContainer = document.getElementById('quizpasa-messages');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'quizpasa-typing';
+    typingDiv.id = 'quizpasa-typing-indicator';
+    typingDiv.innerHTML = `
+        QuizPasa is typing...
+        <div class="quizpasa-typing-dots">
+            <div class="quizpasa-typing-dot"></div>
+            <div class="quizpasa-typing-dot"></div>
+            <div class="quizpasa-typing-dot"></div>
+        </div>
+    `;
+    
+    messagesContainer.appendChild(typingDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    return typingDiv;
+}
+
+function hideQuizPasaTyping() {
+    const typingDiv = document.getElementById('quizpasa-typing-indicator');
+    if (typingDiv) {
+        typingDiv.remove();
+    }
+}
+
+async function sendQuizPasaMessage() {
+    const input = document.getElementById('quizpasa-input');
+    const sendButton = document.querySelector('.quizpasa-send');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    // Add user message
+    addQuizPasaMessage(message, 'user');
+    
+    // Clear input and disable send button
+    input.value = '';
+    sendButton.disabled = true;
+    
+    // Show typing indicator
+    const typingIndicator = showQuizPasaTyping();
+    
+    try {
+        const response = await fetch('/quizpasa_chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: message,
+                history: quizPasaConversationHistory.slice(-8) // Send last 8 messages for context
+            })
+        });
+        
+        const data = await response.json();
+        
+        // Hide typing indicator
+        hideQuizPasaTyping();
+        
+        if (data.success) {
+            addQuizPasaMessage(data.message, 'bot');
+        } else {
+            addQuizPasaMessage(data.message || 'Sorry, I encountered an error. Please try again!', 'bot');
         }
-    </script>
+        
+    } catch (error) {
+        console.error('QuizPasa error:', error);
+        hideQuizPasaTyping();
+        addQuizPasaMessage('Sorry, I\'m having trouble connecting right now. Please try again!', 'bot');
+    } finally {
+        // Re-enable send button
+        sendButton.disabled = false;
+        input.focus();
+    }
+}
+
+// Close chatbox when clicking outside
+document.addEventListener('click', function(event) {
+    const container = document.querySelector('.quizpasa-container');
+    const chatbox = document.getElementById('quizpasa-chatbox');
+    
+    if (quizPasaIsOpen && !container.contains(event.target)) {
+        closeQuizPasa();
+    }
+});
+</script>
 </body>
 </html>

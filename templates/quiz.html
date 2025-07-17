@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - StudyPasa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="quiz-section">
+            <h1>Generated MCQs</h1>
+            <p>From file: <strong>{{ filename }}</strong></p>
+            
+            <div class="quiz-stats">
+                <span class="total-questions">Total Questions: {{ mcqs|length }}</span>
+                <span class="score">Score: <span id="score">0</span>/{{ mcqs|length }}</span>
+            </div>
+            
+            <div class="quiz-container">
+                {% for mcq in mcqs %}
+                <div class="question-card" data-question-index="{{ loop.index0 }}">
+                    <div class="question-header">
+                        <h3>Question {{ loop.index }}</h3>
+                    </div>
+                    
+                    <div class="question-text">
+                        {{ mcq.question }}
+                    </div>
+                    
+                    <div class="options">
+                        {% for option in mcq.options %}
+                        <button class="option-btn" 
+                                data-option-index="{{ loop.index0 }}"
+                                data-correct-answer="{{ mcq.correct_answer }}">
+                            <span class="option-label">{{ ['A', 'B', 'C', 'D'][loop.index0] }}.</span>
+                            <span class="option-text">{{ option }}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="feedback" style="display: none;">
+                        <div class="feedback-content">
+                            <span class="feedback-icon"></span>
+                            <span class="feedback-text"></span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="quiz-actions">
+                <button class="btn btn-secondary" onclick="resetQuiz()">Reset Quiz</button>
+                <a href="{{ url_for('index') }}" class="btn btn-primary">Generate New Quiz</a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Initialize variables
+        let score = 0;
+        const totalQuestions = parseInt('{{ mcqs|length }}');
+        const answeredQuestions = new Set();
+        
+        // Handle option selection
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const questionCard = this.closest('.question-card');
+                const questionIndex = parseInt(questionCard.dataset.questionIndex);
+                const selectedOption = parseInt(this.dataset.optionIndex);
+                const correctAnswer = parseInt(this.dataset.correctAnswer);
+                
+                // Prevent multiple answers for the same question
+                if (answeredQuestions.has(questionIndex)) {
+                    return;
+                }
+                
+                // Mark question as answered
+                answeredQuestions.add(questionIndex);
+                
+                // Disable all options in this question
+                questionCard.querySelectorAll('.option-btn').forEach(option => {
+                    option.disabled = true;
+                });
+                
+                // Show feedback
+                const isCorrect = selectedOption === correctAnswer;
+                showFeedback(questionCard, isCorrect, correctAnswer);
+                
+                // Update score
+                if (isCorrect) {
+                    score++;
+                    this.classList.add('correct');
+                } else {
+                    this.classList.add('incorrect');
+                    // Highlight correct answer
+                    questionCard.querySelectorAll('.option-btn')[correctAnswer].classList.add('correct');
+                }
+                
+                // Update score display
+                document.getElementById('score').textContent = score;
+            });
+        });
+        
+        function showFeedback(questionCard, isCorrect, correctAnswer) {
+            const feedback = questionCard.querySelector('.feedback');
+            const feedbackIcon = feedback.querySelector('.feedback-icon');
+            const feedbackText = feedback.querySelector('.feedback-text');
+            
+            if (isCorrect) {
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct!';
+                feedback.className = 'feedback correct';
+            } else {
+                feedbackIcon.textContent = '❌';
+                feedbackText.textContent = `Wrong! The correct answer is ${['A', 'B', 'C', 'D'][correctAnswer]}.`;
+                feedback.className = 'feedback incorrect';
+            }
+            
+            feedback.style.display = 'block';
+        }
+        
+        function resetQuiz() {
+            score = 0;
+            answeredQuestions.clear();
+            document.getElementById('score').textContent = '0';
+            
+            // Reset all question cards
+            document.querySelectorAll('.question-card').forEach(card => {
+                // Re-enable all options
+                card.querySelectorAll('.option-btn').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('correct', 'incorrect');
+                });
+                
+                // Hide feedback
+                card.querySelector('.feedback').style.display = 'none';
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File - StudyPasa</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="upload-section">
+            <h1>Upload Your Document</h1>
+            <p>Upload a PDF, DOCX, PPTX, or image file to generate MCQs</p>
+            
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="messages">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <form method="POST" enctype="multipart/form-data" class="upload-form">
+                <div class="upload-area" id="upload-area">
+                    <div class="upload-content">
+                        <span class="upload-icon">📁</span>
+                        <p>Drag & drop your file here or click to browse</p>
+                        <input type="file" name="file" id="file-input" accept=".pdf,.docx,.pptx,.png,.jpg,.jpeg,.tiff,.bmp" required>
+                    </div>
+                </div>
+                
+                <div class="file-info" id="file-info" style="display: none;">
+                    <span class="file-name"></span>
+                    <span class="file-size"></span>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" id="submit-btn" disabled>
+                    <span class="btn-text">Generate MCQs</span>
+                    <span class="spinner" style="display: none;">Processing...</span>
+                </button>
+            </form>
+            
+            <div class="supported-formats">
+                <h3>Supported Formats:</h3>
+                <div class="format-list">
+                    <span class="format-item">📄 PDF</span>
+                    <span class="format-item">📝 DOCX</span>
+                    <span class="format-item">📊 PPTX</span>
+                    <span class="format-item">🖼️ PNG</span>
+                    <span class="format-item">📸 JPG</span>
+                    <span class="format-item">🖼️ TIFF</span>
+                    <span class="format-item">📱 BMP</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const uploadArea = document.getElementById('upload-area');
+        const fileInput = document.getElementById('file-input');
+        const fileInfo = document.getElementById('file-info');
+        const submitBtn = document.getElementById('submit-btn');
+        const form = document.querySelector('.upload-form');
+        
+        // File upload handling
+        uploadArea.addEventListener('click', () => fileInput.click());
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('drag-over');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('drag-over');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('drag-over');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                handleFileSelect();
+            }
+        });
+        
+        fileInput.addEventListener('change', handleFileSelect);
+        
+        function handleFileSelect() {
+            const file = fileInput.files[0];
+            if (file) {
+                const fileName = file.name;
+                const fileSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+                
+                fileInfo.querySelector('.file-name').textContent = fileName;
+                fileInfo.querySelector('.file-size').textContent = fileSize;
+                fileInfo.style.display = 'block';
+                
+                submitBtn.disabled = false;
+                uploadArea.classList.add('file-selected');
+            }
+        }
+        
+        // Form submission handling
+        form.addEventListener('submit', (e) => {
+            submitBtn.disabled = true;
+            submitBtn.querySelector('.btn-text').style.display = 'none';
+            submitBtn.querySelector('.spinner').style.display = 'inline';
+        });
+    </script>
+</body>
+</html>

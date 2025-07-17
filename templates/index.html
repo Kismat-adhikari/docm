@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyPasa - Generate MCQs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <h1>StudyPasa</h1>
+            <p>Transform your documents into interactive MCQs</p>
+            <div class="features">
+                <div class="feature">
+                    <span class="icon">📄</span>
+                    <span>PDF Support</span>
+                </div>
+                <div class="feature">
+                    <span class="icon">📝</span>
+                    <span>DOCX Support</span>
+                </div>
+                <div class="feature">
+                    <span class="icon">📊</span>
+                    <span>PPTX Support</span>
+                </div>
+            </div>
+            <a href="{{ url_for('upload') }}" class="btn btn-primary">Generate MCQs</a>
+        </div>
+    </div>
+</body>
+</html>

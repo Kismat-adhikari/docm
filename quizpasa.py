@@ -13,24 +13,24 @@ class QuizPasa:
         
         # System prompt for QuizPasa personality
         self.system_prompt = """
-        You are QuizPasa, a friendly and knowledgeable AI study assistant for the StudyBetter application. 
-        Your personality is:
-        - Enthusiastic about learning and education
-        - Patient and encouraging with students
-        - Knowledgeable about study techniques, MCQs, flashcards, and educational content
-        - Helpful with academic questions and study-related topics
-        - Concise but informative in your responses
-        - Always positive and motivating
+        You are QuizPasa, an AI study assistant for the StudyBetter application. 
+        Your communication style:
+        - Direct and concise responses
+        - Professional but approachable
+        - Focused on providing useful information
+        - Avoid excessive enthusiasm or overly friendly language
+        - Keep responses brief unless detailed explanation is needed
+        - Don't use excessive greetings or pleasantries
         
         Your main functions:
         - Help users understand how to use the StudyBetter platform
         - Answer questions about study techniques and learning strategies
         - Provide educational support and explanations
         - Help with general academic questions
-        - Encourage good study habits
+        - Provide study guidance
         
-        Keep your responses helpful, friendly, and focused on education and learning.
-        If asked about topics outside of education/study, politely redirect to study-related topics.
+        Keep responses helpful and to the point. If asked about non-educational topics, 
+        briefly redirect to study-related topics without being overly apologetic.
         """
     
     def is_api_configured(self):
@@ -53,7 +53,7 @@ class QuizPasa:
         if not self.is_api_configured():
             return {
                 "success": False,
-                "message": "Hi! I'm QuizPasa, your study assistant. However, I need to be properly configured with an API key to help you. Please contact your administrator!",
+                "message": "I'm QuizPasa, your study assistant. I need to be configured with an API key to help you. Please contact your administrator.",
                 "error": "API key not configured"
             }
         
@@ -100,8 +100,8 @@ class QuizPasa:
             payload = {
                 "model": self.model,
                 "messages": messages,
-                "temperature": 0.7,
-                "max_tokens": 500,
+                "temperature": 0.5,  # Reduced temperature for more consistent, less creative responses
+                "max_tokens": 400,   # Reduced max tokens for more concise responses
                 "stream": False
             }
             
@@ -132,20 +132,20 @@ class QuizPasa:
                 
                 return {
                     "success": False,
-                    "message": "Sorry, I'm having trouble connecting right now. Please try again in a moment!",
+                    "message": "I'm having trouble connecting right now. Please try again.",
                     "error": error_message
                 }
                 
         except requests.RequestException as e:
             return {
                 "success": False,
-                "message": "I'm having connection issues right now. Please try again later!",
+                "message": "Connection issues. Please try again later.",
                 "error": f"Network error: {str(e)}"
             }
         except Exception as e:
             return {
                 "success": False,
-                "message": "Something went wrong on my end. Please try again!",
+                "message": "Something went wrong. Please try again.",
                 "error": f"Unexpected error: {str(e)}"
             }
     
@@ -153,24 +153,24 @@ class QuizPasa:
         """Get a welcome message for new chat sessions"""
         return {
             "success": True,
-            "message": "Hi! I'm QuizPasa, your friendly study assistant! 🎓\n\nI'm here to help you with:\n• Study techniques and tips\n• Understanding your MCQs and flashcards\n• Learning strategies\n• Academic questions\n\nWhat would you like to know?",
+            "message": "Hi, I'm QuizPasa. I can help you with study techniques, MCQs, flashcards, and academic questions. What do you need help with?",
             "timestamp": datetime.now().isoformat()
         }
     
     def get_study_tips(self):
         """Get general study tips"""
         tips = [
-            "📚 Use active recall - test yourself instead of just re-reading",
-            "🔄 Practice spaced repetition with your flashcards",
-            "⏰ Study in focused 25-minute sessions (Pomodoro technique)",
-            "📝 Summarize key concepts in your own words",
-            "🎯 Focus on understanding, not just memorizing",
-            "💡 Connect new information to what you already know"
+            "• Use active recall - test yourself instead of just re-reading",
+            "• Practice spaced repetition with flashcards",
+            "• Study in focused 25-minute sessions",
+            "• Summarize key concepts in your own words",
+            "• Focus on understanding, not just memorizing",
+            "• Connect new information to what you already know"
         ]
         
         return {
             "success": True,
-            "message": "Here are some effective study tips:\n\n" + "\n".join(tips),
+            "message": "Study tips:\n\n" + "\n".join(tips),
             "timestamp": datetime.now().isoformat()
         }
 
@@ -193,7 +193,7 @@ def handle_chat_message(user_message, conversation_history=None, session_data=No
         if any(keyword in user_message.lower() for keyword in ['explain', 'question', 'answer', 'mcq', 'flashcard']):
             return {
                 "success": True,
-                "message": "I don't see any study materials in your current session. Please upload a document first to generate MCQs and flashcards, then I can help you understand them better!",
+                "message": "No study materials found in your current session. Please upload a document to generate MCQs and flashcards first.",
                 "timestamp": datetime.now().isoformat()
             }
     

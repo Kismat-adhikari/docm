@@ -2,7 +2,7 @@ import os
 from dotenv import load_dotenv
 import json
 import requests
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, session
 from werkzeug.utils import secure_filename
 import pdfplumber
 from pdf2image import convert_from_path
@@ -27,6 +27,11 @@ app.config['SECRET_KEY'] = 'your-secret-key-here'
 app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
 
+# Configure session for temporary storage
+app.config['SESSION_TYPE'] = 'filesystem'
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_USE_SIGNER'] = True
+app.config['SESSION_KEY_PREFIX'] = 'studypasa:'
 # Ensure uploads directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
@@ -687,6 +692,14 @@ def upload():
                 # Generate Flashcards
                 flashcards = generate_flashcards_with_groq(text, num_flashcards=10)
                 
+                # Store generated content in session for temporary access
+                # This overwrites any previous session data with new content
+                session['mcqs'] = mcqs
+                session['flashcards'] = flashcards
+                session['filename'] = filename
+                
+                print(f"Stored {len(mcqs)} MCQs and {len(flashcards)} flashcards in session")
+                
                 # Clean up uploaded file
                 os.remove(file_path)
                 
@@ -749,6 +762,46 @@ def quizpasa_chat():
             'message': 'Sorry, I encountered an error. Please try again!',
             'error': str(e)
         }), 500
+
+
+
+@app.route('/session_data')
+def get_session_data():
+    """API endpoint to retrieve current session's MCQs and flashcards"""
+    try:
+        # Get data from session storage
+        mcqs = session.get('mcqs', [])
+        flashcards = session.get('flashcards', [])
+        filename = session.get('filename', 'No file')
+        
+        return jsonify({
+            'success': True,
+            'mcqs': mcqs,
+            'flashcards': flashcards,
+            'filename': filename,
+            'mcq_count': len(mcqs),
+            'flashcard_count': len(flashcards)
+        })
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/clear_session')
+def clear_session_data():
+    """Clear all session data"""
+    session.pop('mcqs', None)
+    session.pop('flashcards', None)
+    session.pop('filename', None)
+    
+    return jsonify({
+        'success': True,
+        'message': 'Session data cleared'
+    })
+
+
+
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))

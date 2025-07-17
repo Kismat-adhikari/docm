@@ -4,69 +4,70 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz - StudyPasa</title>
-    <!-- <link rel="stylesheet" href="style.css"> -->
- <link rel="stylesheet" href="/static/css/quiz.css">
+   <link rel="stylesheet" href="/static/css/quiz.css">
 </head>
 <body>
-    <div class="container">
+    <div class="studypasa-main-container">
         <!-- Quiz Section -->
-        <div class="quiz-section">
-            <h1>Generated MCQs</h1>
-            <p>From file: <strong>{{ filename }}</strong></p>
-            
-            <div class="quiz-stats">
-                <span class="total-questions">Total Questions: {{ mcqs|length }}</span>
-                <span class="score">Score: <span id="score">0</span>/{{ mcqs|length }}</span>
+        <div class="studypasa-quiz-section">
+            <div class="studypasa-quiz-header">
+                <h1>Generated MCQs</h1>
+                <p class="studypasa-file-info">From file: <strong>{{ filename }}</strong></p>
             </div>
             
-            <div class="quiz-container">
+            <div class="studypasa-quiz-metrics">
+                <span class="studypasa-total-count">Total Questions: {{ mcqs|length }}</span>
+                <span class="studypasa-score-display">Score: <span id="studypasa-score-counter">0</span>/{{ mcqs|length }}</span>
+            </div>
+            
+            <div class="studypasa-quiz-wrapper">
                 {% for mcq in mcqs %}
-                <div class="question-card" data-question-index="{{ loop.index0 }}">
-                    <div class="question-header">
-                        <h3>Question {{ loop.index }}</h3>
+                <div class="studypasa-question-item" data-question-index="{{ loop.index0 }}">
+                    <div class="studypasa-question-number">
+                        Question {{ loop.index }}
                     </div>
                     
-                    <div class="question-text">
+                    <div class="studypasa-question-content">
                         {{ mcq.question }}
                     </div>
                     
-                    <div class="options">
+                    <div class="studypasa-answer-options">
                         {% for option in mcq.options %}
-                        <button class="option-btn" 
+                        <button class="studypasa-option-button" 
                                 data-option-index="{{ loop.index0 }}"
                                 data-correct-answer="{{ mcq.correct_answer }}">
-                            <span class="option-label">{{ ['A', 'B', 'C', 'D'][loop.index0] }}.</span>
-                            <span class="option-text">{{ option }}</span>
+                            <span class="studypasa-option-label">{{ ['A', 'B', 'C', 'D'][loop.index0] }}</span>
+                            <span class="studypasa-option-text">{{ option }}</span>
                         </button>
                         {% endfor %}
                     </div>
                     
-                    <div class="feedback" style="display: none;">
-                        <div class="feedback-content">
-                            <span class="feedback-icon"></span>
-                            <span class="feedback-text"></span>
+                    <div class="studypasa-answer-feedback">
+                        <div class="studypasa-feedback-content">
+                            <span class="studypasa-feedback-icon"></span>
+                            <span class="studypasa-feedback-text"></span>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
             
-            <div class="quiz-actions">
-                <button class="btn btn-secondary" onclick="resetQuiz()">Reset Quiz</button>
-                <a href="{{ url_for('index') }}" class="btn btn-primary">Generate New Quiz</a>
+            <div class="studypasa-quiz-controls">
+                <button class="studypasa-btn studypasa-btn-secondary" onclick="resetStudyPasaQuiz()">Reset Quiz</button>
+                <a href="{{ url_for('index') }}" class="studypasa-btn studypasa-btn-primary">Generate New Quiz</a>
             </div>
         </div>
 
         <!-- Flashcard Section -->
-        <div class="flashcard-section">
+        <div class="studypasa-flashcard-section">
             <h2>Flashcards</h2>
-            <div class="flashcard-container">
+            <div class="studypasa-flashcard-grid">
                 {% for flashcard in flashcards %}
-                <div class="flashcard-card" onclick="this.classList.toggle('flipped')">
-                    <div class="flashcard-front">
+                <div class="studypasa-flashcard-item" onclick="this.classList.toggle('studypasa-flipped')">
+                    <div class="studypasa-flashcard-front">
                         <h3>{{ flashcard.front }}</h3>
                     </div>
-                    <div class="flashcard-back">
+                    <div class="studypasa-flashcard-back">
                         <p>{{ flashcard.back }}</p>
                     </div>
                 </div>
@@ -74,61 +75,299 @@
             </div>
         </div>
     </div>
-    
 
-
- <div class="quizpasa-container">
-        <!-- Floating Mascot Button -->
-        <div class="quizpasa-mascot" id="quizpasa-mascot">
-            <img src="https://via.placeholder.com/45x45/667eea/ffffff?text=QP" alt="QuizPasa" />
-            <!-- Uncomment below for notification badge -->
-            <!-- <div class="quizpasa-notification">1</div> -->
-        </div>
+    <!-- Assistant Chatbot -->
+    <div class="studypasa-assistant-container">
+        <button class="studypasa-assistant-trigger" id="studypasa-assistant-trigger">
+            <img src="https://via.placeholder.com/45x45/667eea/ffffff?text=QP" alt="QuizPasa Assistant" />
+        </button>
         
-        <!-- Chatbox -->
-        <div class="quizpasa-chatbox" id="quizpasa-chatbox">
-            <div class="quizpasa-header">
-                <h3 class="quizpasa-title">QuizPasa Assistant</h3>
-                <button class="quizpasa-close" id="quizpasa-close">×</button>
+        <div class="studypasa-assistant-panel" id="studypasa-assistant-panel">
+            <div class="studypasa-assistant-header">
+                <h3 class="studypasa-assistant-title">QuizPasa Assistant</h3>
+                <button class="studypasa-assistant-close" id="studypasa-assistant-close">×</button>
             </div>
             
-            <div class="quizpasa-messages" id="quizpasa-messages">
-                <!-- Sample messages for demonstration -->
-                <!-- <div class="quizpasa-message bot">
-                    Hi! I'm QuizPasa, your friendly study assistant! 🎓
-                    
-                    I'm here to help you with:
-                    • Study techniques and tips
-                    • Understanding your MCQs and flashcards
-                    • Learning strategies
-                    • Academic questions
-                    
-                    What would you like to know?
-                </div> -->
-            </div>
-
-            <div class="quizpasa-typing" id="quizpasa-typing">
-                QuizPasa is typing...
-                <div class="quizpasa-typing-dots">
-                    <div class="quizpasa-typing-dot"></div>
-                    <div class="quizpasa-typing-dot"></div>
-                    <div class="quizpasa-typing-dot"></div>
-                </div>
+            <div class="studypasa-conversation-area" id="studypasa-conversation-area">
+                <!-- Messages will be populated by JavaScript -->
             </div>
             
-            <div class="quizpasa-input-container">
+            <div class="studypasa-input-area">
                 <input 
                     type="text" 
-                    class="quizpasa-input" 
-                    id="quizpasa-input"
+                    class="studypasa-message-input" 
+                    id="studypasa-message-input"
                     placeholder="Ask me anything about studying..."
                 />
-                <button class="quizpasa-send" id="quizpasa-send" title="Send message">
+                <button class="studypasa-send-button" id="studypasa-send-button" title="Send message">
                     ➤
                 </button>
             </div>
         </div>
     </div>
-<script src="/static/js/script.js"></script>
-</body>
-</html>
+
+    <script>
+        // Initialize quiz variables
+        let studyPasaScore = 0;
+        const studyPasaTotalQuestions = parseInt('{{ mcqs|length }}');
+        const studyPasaAnsweredQuestions = new Set();
+
+        // Initialize Assistant chatbot variables
+        let studyPasaConversationHistory = [];
+        let studyPasaAssistantOpen = false;
+
+        // Quiz functionality
+        document.querySelectorAll('.studypasa-option-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const questionCard = this.closest('.studypasa-question-item');
+                const questionIndex = parseInt(questionCard.dataset.questionIndex);
+                const selectedOption = parseInt(this.dataset.optionIndex);
+                const correctAnswer = parseInt(this.dataset.correctAnswer);
+                
+                // Prevent multiple answers for the same question
+                if (studyPasaAnsweredQuestions.has(questionIndex)) {
+                    return;
+                }
+                
+                // Mark question as answered
+                studyPasaAnsweredQuestions.add(questionIndex);
+                
+                // Disable all options in this question
+                questionCard.querySelectorAll('.studypasa-option-button').forEach(option => {
+                    option.disabled = true;
+                });
+                
+                // Show feedback
+                const isCorrect = selectedOption === correctAnswer;
+                showStudyPasaFeedback(questionCard, isCorrect, correctAnswer);
+                
+                // Update score
+                if (isCorrect) {
+                    studyPasaScore++;
+                    this.classList.add('studypasa-correct-answer');
+                } else {
+                    this.classList.add('studypasa-wrong-answer');
+                    // Highlight correct answer
+                    questionCard.querySelectorAll('.studypasa-option-button')[correctAnswer].classList.add('studypasa-correct-answer');
+                }
+                
+                // Update score display
+                document.getElementById('studypasa-score-counter').textContent = studyPasaScore;
+            });
+        });
+
+        function showStudyPasaFeedback(questionCard, isCorrect, correctAnswer) {
+            const feedback = questionCard.querySelector('.studypasa-answer-feedback');
+            const feedbackIcon = feedback.querySelector('.studypasa-feedback-icon');
+            const feedbackText = feedback.querySelector('.studypasa-feedback-text');
+            
+            if (isCorrect) {
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct!';
+                feedback.className = 'studypasa-answer-feedback studypasa-correct-feedback';
+            } else {
+                feedbackIcon.textContent = '❌';
+                feedbackText.textContent = `Wrong! The correct answer is ${['A', 'B', 'C', 'D'][correctAnswer]}.`;
+                feedback.className = 'studypasa-answer-feedback studypasa-incorrect-feedback';
+            }
+            
+            feedback.style.display = 'block';
+        }
+
+        function resetStudyPasaQuiz() {
+            studyPasaScore = 0;
+            studyPasaAnsweredQuestions.clear();
+            document.getElementById('studypasa-score-counter').textContent = '0';
+            
+            // Reset all question cards
+            document.querySelectorAll('.studypasa-question-item').forEach(card => {
+                // Re-enable all options
+                card.querySelectorAll('.studypasa-option-button').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('studypasa-correct-answer', 'studypasa-wrong-answer');
+                });
+                
+                // Hide feedback
+                card.querySelector('.studypasa-answer-feedback').style.display = 'none';
+            });
+        }
+
+        // Assistant Chatbot functionality
+        function toggleStudyPasaAssistant() {
+            const panel = document.getElementById('studypasa-assistant-panel');
+            
+            if (studyPasaAssistantOpen) {
+                closeStudyPasaAssistant();
+            } else {
+                openStudyPasaAssistant();
+            }
+        }
+
+        function openStudyPasaAssistant() {
+            const panel = document.getElementById('studypasa-assistant-panel');
+            panel.classList.add('studypasa-panel-active');
+            studyPasaAssistantOpen = true;
+            
+            // Focus on input
+            document.getElementById('studypasa-message-input').focus();
+            
+            // Add welcome message if this is the first time opening
+            if (studyPasaConversationHistory.length === 0) {
+                addStudyPasaMessage('Hi! I\'m QuizPasa, your friendly study assistant! 🎓\n\nI\'m here to help you with:\n• Study techniques and tips\n• Understanding your MCQs and flashcards\n• Learning strategies\n• Academic questions\n\nWhat would you like to know?', 'bot');
+            }
+        }
+
+        function closeStudyPasaAssistant() {
+            const panel = document.getElementById('studypasa-assistant-panel');
+            panel.classList.remove('studypasa-panel-active');
+            studyPasaAssistantOpen = false;
+        }
+
+        function handleStudyPasaKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendStudyPasaMessage();
+            }
+        }
+
+        function addStudyPasaMessage(text, sender) {
+            const messagesContainer = document.getElementById('studypasa-conversation-area');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `studypasa-message-bubble studypasa-${sender}-message`;
+            messageDiv.textContent = text;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Store in conversation history
+            studyPasaConversationHistory.push({
+                role: sender === 'user' ? 'user' : 'assistant',
+                content: text
+            });
+            
+            // Keep only last 10 messages to prevent memory issues
+            if (studyPasaConversationHistory.length > 10) {
+                studyPasaConversationHistory = studyPasaConversationHistory.slice(-10);
+            }
+        }
+
+        function showStudyPasaTyping() {
+            const messagesContainer = document.getElementById('studypasa-conversation-area');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'studypasa-typing-indicator';
+            typingDiv.id = 'studypasa-typing-indicator';
+            typingDiv.innerHTML = `
+                QuizPasa is typing...
+                <div class="studypasa-typing-dots">
+                    <div class="studypasa-typing-dot"></div>
+                    <div class="studypasa-typing-dot"></div>
+                    <div class="studypasa-typing-dot"></div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return typingDiv;
+        }
+
+        function hideStudyPasaTyping() {
+            const typingDiv = document.getElementById('studypasa-typing-indicator');
+            if (typingDiv) {
+                typingDiv.remove();
+            }
+        }
+
+        async function sendStudyPasaMessage() {
+            const input = document.getElementById('studypasa-message-input');
+            const sendButton = document.getElementById('studypasa-send-button');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addStudyPasaMessage(message, 'user');
+            
+            // Clear input and disable send button
+            input.value = '';
+            sendButton.disabled = true;
+            
+            // Show typing indicator
+            const typingIndicator = showStudyPasaTyping();
+            
+            try {
+                const response = await fetch('/quizpasa_chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        history: studyPasaConversationHistory.slice(-8) // Send last 8 messages for context
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Hide typing indicator
+                hideStudyPasaTyping();
+                
+                if (data.success) {
+                    addStudyPasaMessage(data.message, 'bot');
+                } else {
+                    addStudyPasaMessage(data.message || 'Sorry, I encountered an error. Please try again!', 'bot');
+                }
+                
+            } catch (error) {
+                console.error('QuizPasa error:', error);
+                hideStudyPasaTyping();
+                addStudyPasaMessage('Sorry, I\'m having trouble connecting right now. Please try again!', 'bot');
+            } finally {
+                // Re-enable send button
+                sendButton.disabled = false;
+                input.focus();
+            }
+        }
+
+        // DOM Content Loaded - Set up event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listener to trigger button
+            const trigger = document.getElementById('studypasa-assistant-trigger');
+            if (trigger) {
+                trigger.addEventListener('click', toggleStudyPasaAssistant);
+            }
+            
+            // Add click event listener to close button
+            const closeButton = document.getElementById('studypasa-assistant-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', closeStudyPasaAssistant);
+            }
+            
+            // Add keypress event listener to input
+            const input = document.getElementById('studypasa-message-input');
+            if (input) {
+                input.addEventListener('keypress', handleStudyPasaKeyPress);
+            }
+            
+            // Add click event listener to send button
+            const sendButton = document.getElementById('studypasa-send-button');
+            if (sendButton) {
+                sendButton.addEventListener('click', sendStudyPasaMessage);
+            }
+
+            // Auto-open the assistant when page loads
+            setTimeout(() => {
+                openStudyPasaAssistant();
+            }, 1000); // 1 second delay for better UX
+        });
+
+        // Close assistant when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.studypasa-assistant-container');
+            const panel = document.getElementById('studypasa-assistant-panel');
+            
+            if (studyPasaAssistantOpen && !container.contains(event.target)) {
+                closeStudyPasaAssistant();
+            }
+        });
+    </script>

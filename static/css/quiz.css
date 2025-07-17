@@ -1,4 +1,350 @@
-.quizpasa-container {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .studypasa-main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Quiz Section Styles */
+        .studypasa-quiz-section {
+            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+        }
+
+        .studypasa-quiz-header h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(45deg, #f46464, #ff8a80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .studypasa-file-info {
+            text-align: center;
+            color: #cccccc;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .studypasa-file-info strong {
+            color: #f46464;
+        }
+
+        .studypasa-quiz-metrics {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(244, 100, 100, 0.1);
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(244, 100, 100, 0.2);
+        }
+
+        .studypasa-total-count,
+        .studypasa-score-display {
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .studypasa-score-display {
+            color: #f46464;
+        }
+
+        .studypasa-quiz-wrapper {
+            display: grid;
+            gap: 25px;
+        }
+
+        .studypasa-question-item {
+            background: linear-gradient(135deg, #333333, #2a2a2a);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid #404040;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .studypasa-question-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #f46464, #ff8a80);
+        }
+
+        .studypasa-question-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(244, 100, 100, 0.15);
+        }
+
+        .studypasa-question-number {
+            background: linear-gradient(45deg, #f46464, #ff8a80);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .studypasa-question-content {
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #ffffff;
+            line-height: 1.5;
+        }
+
+        .studypasa-answer-options {
+            display: grid;
+            gap: 12px;
+        }
+
+        .studypasa-option-button {
+            background: linear-gradient(135deg, #404040, #353535);
+            border: 2px solid #505050;
+            color: #ffffff;
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .studypasa-option-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(244, 100, 100, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .studypasa-option-button:hover::before {
+            left: 100%;
+        }
+
+        .studypasa-option-button:hover {
+            border-color: #f46464;
+            transform: translateX(5px);
+        }
+
+        .studypasa-option-button:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .studypasa-option-button.studypasa-correct-answer {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            border-color: #4caf50;
+        }
+
+        .studypasa-option-button.studypasa-wrong-answer {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            border-color: #f44336;
+        }
+
+        .studypasa-option-label {
+            background: #f46464;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9rem;
+            flex-shrink: 0;
+        }
+
+        .studypasa-option-text {
+            flex: 1;
+        }
+
+        .studypasa-answer-feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        .studypasa-answer-feedback.studypasa-correct-feedback {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            color: #4caf50;
+        }
+
+        .studypasa-answer-feedback.studypasa-incorrect-feedback {
+            background: rgba(244, 67, 54, 0.1);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            color: #f44336;
+        }
+
+        .studypasa-feedback-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+
+        .studypasa-feedback-icon {
+            font-size: 1.2rem;
+        }
+
+        /* Quiz Actions */
+        .studypasa-quiz-controls {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .studypasa-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .studypasa-btn-secondary {
+            background: linear-gradient(135deg, #666666, #555555);
+            color: white;
+        }
+
+        .studypasa-btn-secondary:hover {
+            background: linear-gradient(135deg, #777777, #666666);
+            transform: translateY(-2px);
+        }
+
+        .studypasa-btn-primary {
+            background: linear-gradient(135deg, #f46464, #ff8a80);
+            color: white;
+        }
+
+        .studypasa-btn-primary:hover {
+            background: linear-gradient(135deg, #ff8a80, #f46464);
+            transform: translateY(-2px);
+        }
+
+        /* Flashcard Section */
+        .studypasa-flashcard-section {
+            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            border: 1px solid #333;
+        }
+
+        .studypasa-flashcard-section h2 {
+            font-size: 2rem;
+            color: #f46464;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .studypasa-flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .studypasa-flashcard-item {
+            background: linear-gradient(135deg, #333333, #2a2a2a);
+            border-radius: 15px;
+            height: 200px;
+            cursor: pointer;
+            transition: all 0.6s ease;
+            transform-style: preserve-3d;
+            position: relative;
+            border: 1px solid #404040;
+        }
+
+        .studypasa-flashcard-item:hover {
+            box-shadow: 0 15px 30px rgba(244, 100, 100, 0.2);
+        }
+
+        .studypasa-flashcard-item.studypasa-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .studypasa-flashcard-front,
+        .studypasa-flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .studypasa-flashcard-front {
+            background: linear-gradient(135deg, #f46464, #ff8a80);
+            color: white;
+        }
+
+        .studypasa-flashcard-back {
+            background: linear-gradient(135deg, #333333, #2a2a2a);
+            color: #ffffff;
+            transform: rotateY(180deg);
+        }
+
+        .studypasa-flashcard-front h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .studypasa-flashcard-back p {
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        /* Assistant Chatbot Styles */
+        .studypasa-assistant-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
@@ -6,228 +352,276 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* Floating Mascot Button */
-        .quizpasa-mascot {
-            width: 70px;
-            height: 70px;
+        .studypasa-assistant-trigger {
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #f46464, #ff8a80);
+            border: none;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 8px 25px rgba(244, 100, 100, 0.4);
+            transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
         }
 
-        .quizpasa-mascot::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .quizpasa-mascot:hover {
-            transform: scale(1.1) rotate(10deg);
-            box-shadow: 0 12px 35px rgba(102, 126, 234, 0.6);
-        }
-
-        .quizpasa-mascot:hover::before {
-            opacity: 1;
-        }
-
-        .quizpasa-mascot:active {
-            transform: scale(0.95);
-        }
-
-        .quizpasa-mascot img {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            object-fit: cover;
-            filter: brightness(1.1);
-        }
-
-        /* Pulse animation for attention */
-        .quizpasa-mascot::after {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            opacity: 0.7;
-            animation: pulse 2s infinite;
-            z-index: -1;
-        }
-
-        @keyframes pulse {
-            0% {
-                transform: scale(1);
-                opacity: 0.7;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 0.3;
-            }
-            100% {
-                transform: scale(1);
-                opacity: 0.7;
-            }
-        }
-
-        /* Chatbox */
-        .quizpasa-chatbox {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
-            width: 380px;
-            height: 500px;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: 25px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* Header */
-        .quizpasa-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quizpasa-header::before {
+        .studypasa-assistant-trigger::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-            animation: shimmer 3s infinite;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
         }
 
-        @keyframes shimmer {
-            0% {
-                transform: translateX(-100%);
-            }
-            100% {
-                transform: translateX(100%);
-            }
+        .studypasa-assistant-trigger:hover::before {
+            transform: translateX(100%);
         }
 
-        .quizpasa-title {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .studypasa-assistant-trigger:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(244, 100, 100, 0.5);
         }
 
-        .quizpasa-title::before {
-            content: '🎓';
-            font-size: 1.2rem;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {
-                transform: translateY(0);
-            }
-            40% {
-                transform: translateY(-5px);
-            }
-            60% {
-                transform: translateY(-3px);
-            }
-        }
-
-        .quizpasa-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
+        .studypasa-assistant-trigger img {
             width: 35px;
             height: 35px;
             border-radius: 50%;
-            font-size: 1.3rem;
+        }
+
+        .studypasa-assistant-notification {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff3333;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .studypasa-assistant-panel {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+            border-radius: 20px;
+            border: 1px solid #404040;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        .studypasa-assistant-panel.studypasa-panel-active {
+            display: flex;
+        }
+
+        .studypasa-assistant-header {
+            background: linear-gradient(135deg, #f46464, #ff8a80);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .studypasa-assistant-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .studypasa-assistant-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
             cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
         }
 
-        .quizpasa-close:hover {
-            background: rgba(255, 255, 255, 0.3);
+        .studypasa-assistant-close:hover {
+            background: rgba(255, 255, 255, 0.2);
             transform: rotate(90deg);
         }
 
-        /* Messages Container */
-        .quizpasa-messages {
+        .studypasa-conversation-area {
             flex: 1;
             overflow-y: auto;
             padding: 20px;
-            background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 15px;
         }
 
-        .quizpasa-messages::-webkit-scrollbar {
+        .studypasa-conversation-area::-webkit-scrollbar {
             width: 6px;
         }
 
-        .quizpasa-messages::-webkit-scrollbar-track {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+        .studypasa-conversation-area::-webkit-scrollbar-track {
+            background: #1e1e1e;
         }
 
-        .quizpasa-messages::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
+        .studypasa-conversation-area::-webkit-scrollbar-thumb {
+            background: #f46464;
+            border-radius: 3px;
         }
 
-        /* Message Bubbles */
-        .quizpasa-message {
-            max-width: 80%;
-            padding: 15px 18px;
-            border-radius: 20px;
-            font-size: 0.95rem;
+        .studypasa-message-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 0.9rem;
             line-height: 1.4;
-            position: relative;
-            animation: messageSlide 0.3s ease;
+            animation: fadeIn 0.3s ease;
         }
 
-        @keyframes messageSlide {
+        .studypasa-message-bubble.studypasa-user-message {
+            background: linear-gradient(135deg, #f46464, #ff8a80);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .studypasa-message-bubble.studypasa-bot-message {
+            background: linear-gradient(135deg, #333333, #2a2a2a);
+            color: #ffffff;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #404040;
+        }
+
+        .studypasa-typing-indicator {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #333333, #2a2a2a);
+            color: #cccccc;
+            padding: 12px 16px;
+            border-radius: 18px;
+            border-bottom-left-radius: 4px;
+            font-size: 0.9rem;
+            border: 1px solid #404040;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .studypasa-typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .studypasa-typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #f46464;
+            border-radius: 50%;
+            animation: typingPulse 1.4s ease-in-out infinite both;
+        }
+
+        .studypasa-typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .studypasa-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        .studypasa-input-area {
+            padding: 20px;
+            border-top: 1px solid #404040;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .studypasa-message-input {
+            flex: 1;
+            background: #333333;
+            border: 1px solid #505050;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .studypasa-message-input:focus {
+            border-color: #f46464;
+            box-shadow: 0 0 0 3px rgba(244, 100, 100, 0.2);
+        }
+
+        .studypasa-message-input::placeholder {
+            color: #888888;
+        }
+
+        .studypasa-send-button {
+            background: linear-gradient(135deg, #f46464, #ff8a80);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .studypasa-send-button:hover {
+            background: linear-gradient(135deg, #ff8a80, #f46464);
+            transform: scale(1.1);
+        }
+
+        .studypasa-send-button:disabled {
+            background: #666666;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(10px);
@@ -238,623 +632,49 @@
             }
         }
 
-        .quizpasa-message.user {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 5px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .quizpasa-message.bot {
-            background: linear-gradient(135deg, #f8f9ff, #ffffff);
-            color: #333;
-            align-self: flex-start;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            border-bottom-left-radius: 5px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Typing Indicator */
-        .quizpasa-typing {
-            display: none;
-            padding: 15px 18px;
-            background: linear-gradient(135deg, #f0f0f0, #e8e8e8);
-            border-radius: 20px;
-            border-bottom-left-radius: 5px;
-            max-width: 80%;
-            align-self: flex-start;
-            color: #666;
-            font-size: 0.9rem;
-            position: relative;
-            animation: messageSlide 0.3s ease;
-        }
-
-        .quizpasa-typing-dots {
-            display: inline-flex;
-            gap: 4px;
-            margin-left: 8px;
-        }
-
-        .quizpasa-typing-dot {
-            width: 8px;
-            height: 8px;
-            background: #667eea;
-            border-radius: 50%;
-            animation: typingDot 1.4s infinite;
-        }
-
-        .quizpasa-typing-dot:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .quizpasa-typing-dot:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .quizpasa-typing-dot:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typingDot {
-            0%, 60%, 100% {
-                transform: scale(1);
-                opacity: 0.5;
+        @keyframes typingPulse {
+            0%, 80%, 100% {
+                transform: scale(0.8);
+                opacity: 0.6;
             }
-            30% {
-                transform: scale(1.2);
+            40% {
+                transform: scale(1);
                 opacity: 1;
             }
         }
 
-        /* Input Container */
-        .quizpasa-input-container {
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(102, 126, 234, 0.2);
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .quizpasa-input {
-            flex: 1;
-            padding: 15px 20px;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-            border-radius: 25px;
-            font-size: 0.95rem;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            outline: none;
-        }
-
-        .quizpasa-input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-            background: white;
-        }
-
-        .quizpasa-input::placeholder {
-            color: #999;
-            font-style: italic;
-        }
-
-        .quizpasa-send {
-            width: 50px;
-            height: 50px;
-            border: none;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .quizpasa-send:hover:not(:disabled) {
-            transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .quizpasa-send:active {
-            transform: scale(0.95);
-        }
-
-        .quizpasa-send:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Mobile Responsiveness */
-        @media (max-width: 768px) {
-            .quizpasa-container {
-                bottom: 15px;
-                right: 15px;
-            }
-
-            .quizpasa-mascot {
-                width: 60px;
-                height: 60px;
-            }
-
-            .quizpasa-mascot img {
-                width: 35px;
-                height: 35px;
-            }
-
-            .quizpasa-chatbox {
-                width: 90vw;
-                height: 70vh;
-                bottom: 75px;
-                right: -15px;
-            }
-
-            .quizpasa-header {
-                padding: 15px;
-            }
-
-            .quizpasa-title {
-                font-size: 1rem;
-            }
-
-            .quizpasa-messages {
-                padding: 15px;
-            }
-
-            .quizpasa-input-container {
-                padding: 15px;
-            }
-
-            .quizpasa-input {
-                padding: 12px 16px;
-                font-size: 0.9rem;
-            }
-
-            .quizpasa-send {
-                width: 45px;
-                height: 45px;
-            }
-        }
-
-        /* Additional visual enhancements */
-        .quizpasa-chatbox::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%);
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        /* Notification badge (for future use) */
-        .quizpasa-notification {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            width: 20px;
-            height: 20px;
-            background: #ff4757;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-            animation: pulse 2s infinite;
-        }
-             * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            color: #333;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        /* Quiz Section Styles */
-        .quiz-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-
-        .quiz-section h1 {
-            text-align: center;
-            margin-bottom: 10px;
-            color: #333;
-            font-size: 2.5rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .quiz-section > p {
-            text-align: center;
-            margin-bottom: 30px;
-            color: #666;
-            font-size: 1.1rem;
-        }
-
-        .quiz-stats {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border-radius: 15px;
-            border: 1px solid rgba(102, 126, 234, 0.2);
-        }
-
-        .total-questions, .score {
-            font-weight: 600;
-            color: #667eea;
-            font-size: 1.1rem;
-        }
-
-        .quiz-container {
-            margin-bottom: 30px;
-        }
-
-        .question-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .question-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .question-header h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
-        }
-
-        .question-text {
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-            color: #333;
-            line-height: 1.6;
-            font-weight: 500;
-        }
-
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .option-btn {
-            display: flex;
-            align-items: center;
-            padding: 18px 20px;
-            background: linear-gradient(135deg, rgba(248, 249, 250, 0.9), rgba(248, 249, 250, 0.7));
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1rem;
-            text-align: left;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .option-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-            transition: left 0.5s;
-        }
-
-        .option-btn:hover:not(:disabled) {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
-            border-color: #667eea;
-            transform: translateX(5px);
-        }
-
-        .option-btn:hover:not(:disabled)::before {
-            left: 100%;
-        }
-
-        .option-btn:disabled {
-            cursor: not-allowed;
-        }
-
-        .option-btn.correct {
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.15), rgba(40, 167, 69, 0.1));
-            border-color: #28a745;
-            color: #28a745;
-            transform: translateX(5px);
-        }
-
-        .option-btn.incorrect {
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.15), rgba(220, 53, 69, 0.1));
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-
-        .option-label {
-            font-weight: 700;
-            margin-right: 15px;
-            min-width: 30px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .option-text {
-            flex: 1;
-        }
-
-        .feedback {
-            margin-top: 15px;
-            padding: 15px 20px;
-            border-radius: 12px;
-            border: 1px solid;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .feedback.correct {
-            background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(40, 167, 69, 0.05));
-            border-color: #28a745;
-            color: #28a745;
-        }
-
-        .feedback.incorrect {
-            background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(220, 53, 69, 0.05));
-            border-color: #dc3545;
-            color: #dc3545;
-        }
-
-        .feedback-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .feedback-icon {
-            font-size: 1.3rem;
-        }
-
-        .quiz-actions {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        /* Button Styles */
-        .btn {
-            display: inline-block;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: 600;
-            text-decoration: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #6c757d, #5a6268);
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
-        }
-
-        /* Flashcard Section */
-        .flashcard-section {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .flashcard-section h2 {
-            text-align: center;
-            color: #333;
-            font-size: 2.2rem;
-            margin-bottom: 40px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .flashcard-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
-            justify-content: center;
-        }
-
-        .flashcard-card {
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            perspective: 1000px;
-            cursor: pointer;
-            height: 200px;
-            position: relative;
-            transition: transform 0.6s, box-shadow 0.3s ease;
-            transform-style: preserve-3d;
-        }
-
-        .flashcard-card:hover {
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-            transform: translateY(-5px);
-        }
-
-        .flashcard-card.flipped {
-            transform: rotateY(180deg) translateY(-5px);
-        }
-
-        .flashcard-front, .flashcard-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 25px;
-            box-sizing: border-box;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .flashcard-front {
-            background: linear-gradient(135deg, #e3f2fd, #f8f9ff);
-            color: #1976d2;
-            border: 2px solid #90caf9;
-            z-index: 2;
-        }
-
-        .flashcard-back {
-            background: linear-gradient(135deg, #f1f8e9, #f8fff8);
-            color: #388e3c;
-            border: 2px solid #a5d6a7;
-            transform: rotateY(180deg);
-            z-index: 1;
-        }
-
-        .flashcard-front h3 {
-            font-size: 1.4rem;
-            margin: 0;
-            color: #1976d2;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        .flashcard-back p {
-            font-size: 1.1rem;
-            margin: 0;
-            color: #388e3c;
-            line-height: 1.5;
-        }
-
         /* Responsive Design */
         @media (max-width: 768px) {
-            .container {
-                padding: 15px;
+            .studypasa-main-container {
+                padding: 10px;
             }
-            
-            .quiz-section,
-            .flashcard-section {
-                padding: 25px;
-            }
-            
-            .quiz-section h1 {
-                font-size: 2rem;
-            }
-            
-            .quiz-stats {
-                flex-direction: column;
-                gap: 15px;
-                text-align: center;
-            }
-            
-            .quiz-actions {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .flashcard-container {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            
-            .flashcard-card {
-                height: 180px;
-            }
-        }
 
-        @media (max-width: 480px) {
-            .quiz-section h1 {
-                font-size: 1.8rem;
-            }
-            
-            .question-card {
+            .studypasa-quiz-section,
+            .studypasa-flashcard-section {
                 padding: 20px;
             }
-            
-            .option-btn {
-                padding: 15px;
-                font-size: 0.95rem;
+
+            .studypasa-quiz-header h1 {
+                font-size: 2rem;
             }
-            
-            .flashcard-card {
-                height: 160px;
+
+            .studypasa-quiz-metrics {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
             }
-            
-            .flashcard-front h3 {
-                font-size: 1.2rem;
+
+            .studypasa-assistant-panel {
+                width: 300px;
+                height: 450px;
             }
-            
-            .flashcard-back p {
-                font-size: 1rem;
+
+            .studypasa-flashcard-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .studypasa-quiz-controls {
+                flex-direction: column;
+                align-items: center;
             }
         }

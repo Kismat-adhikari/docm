@@ -532,6 +532,109 @@ def create_content_based_mcqs(text, num_questions=10):
     
     return questions[:num_questions]
 
+def generate_flashcards_with_groq(text, num_flashcards=10):
+    load_dotenv()
+    GROQ_API_KEY = os.getenv("GROQ_API_KEY", "your-groq-api-key-here")
+    GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions"
+
+    if not GROQ_API_KEY or GROQ_API_KEY == "your-groq-api-key-here":
+        print("No GROQ API key provided for flashcards, using fallback generation")
+        return create_content_based_flashcards(text, num_flashcards)
+
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    text_preview = text[:4000] if len(text) > 4000 else text
+
+    prompt = f"""
+    You are an expert flashcard generator. Based on the following text content, create {num_flashcards} high-quality flashcards.
+
+    CONTENT TO ANALYZE:
+    {text_preview}
+
+    REQUIREMENTS:
+    1. Each flashcard must have a clear 'front' (question/term) and 'back' (answer/definition).
+    2. Flashcards must be directly related to the content above.
+    3. Cover different topics and concepts from the text.
+    4. Focus on key concepts, facts, and important details.
+
+    RESPONSE FORMAT (JSON only):
+    {{
+        "flashcards": [
+            {{
+                "front": "What is [key concept]?",
+                "back": "[Definition/Explanation of key concept]"
+            }}
+        ]
+    }}
+
+    Generate {num_flashcards} flashcards now. Return ONLY the JSON response, no additional text.
+    """
+
+    payload = {
+        "model": "llama3-8b-8192",
+        "messages": [
+            {
+                "role": "system",
+                "content": "You are an expert educational content creator specializing in generating high-quality flashcards from text content. Always respond with valid JSON format only."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        "temperature": 0.3,
+        "max_tokens": 2500
+    }
+
+    try:
+        print(f"Calling GROQ API to generate {num_flashcards} flashcards...")
+        response = requests.post(GROQ_API_URL, headers=headers, json=payload)
+
+        if response.status_code == 200:
+            result = response.json()
+            content = result['choices'][0]['message']['content'].strip()
+
+            if content.startswith('```json'):
+                content = content.replace('```json', '').replace('```', '').strip()
+
+            try:
+                flashcard_data = json.loads(content)
+                if 'flashcards' in flashcard_data and len(flashcard_data['flashcards']) > 0:
+                    print(f"Successfully generated {len(flashcard_data['flashcards'])} flashcards")
+                    return flashcard_data['flashcards']
+                else:
+                    print("No flashcards found in API response")
+                    return create_content_based_flashcards(text, num_flashcards)
+            except json.JSONDecodeError as e:
+                print(f"JSON parsing error for flashcards: {e}")
+                return create_content_based_flashcards(text, num_flashcards)
+        else:
+            print(f"GROQ API error for flashcards: {response.status_code} - {response.text}")
+            return create_content_based_flashcards(text, num_flashcards)
+
+    except Exception as e:
+        print(f"Error calling GROQ API for flashcards: {e}")
+        return create_content_based_flashcards(text, num_flashcards)
+
+def create_content_based_flashcards(text, num_flashcards=10):
+    """Fallback: Create simple flashcards based on text content"""
+    flashcards = []
+    sentences = [s.strip() for s in text.split('.') if s.strip()]
+
+    for i in range(min(num_flashcards, len(sentences) // 2)):
+        front = sentences[i * 2]
+        back = sentences[i * 2 + 1] if (i * 2 + 1) < len(sentences) else "No further content."
+        flashcards.append({"front": front, "back": back})
+
+    if not flashcards and sentences:
+        # If not enough pairs, create single flashcard from first sentence
+        flashcards.append({"front": sentences[0], "back": "Key point from the text."})
+
+    return flashcards[:num_flashcards]
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -579,10 +682,13 @@ def upload():
                 # Generate MCQs
                 mcqs = generate_mcqs_with_groq(text, num_questions=10)
                 
+                # Generate Flashcards
+                flashcards = generate_flashcards_with_groq(text, num_flashcards=10)
+                
                 # Clean up uploaded file
                 os.remove(file_path)
                 
-                return render_template('quiz.html', mcqs=mcqs, filename=filename)
+                return render_template('quiz.html', mcqs=mcqs, flashcards=flashcards, filename=filename)
                 
             except Exception as e:
                 print(f"Exception during processing: {e}")

@@ -7,17 +7,17 @@
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <div class="upload-section">
+    <div class="studypasa-upload-container">
+        <div class="studypasa-upload-section">
             <h1>Upload Your Document</h1>
             <p>Upload a PDF, DOCX, PPTX, or image file to generate MCQs</p>
             
             <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
-                    <div class="messages">
+                    <div class="studypasa-messages">
                         {% for category, message in messages %}
-                            <div class="alert alert-{{ 'danger' if category == 'error' else 'success' }}">
+                            <div class="studypasa-alert studypasa-alert-{{ 'danger' if category == 'error' else 'success' }}">
                                 {{ message }}
                             </div>
                         {% endfor %}
@@ -25,92 +25,92 @@
                 {% endif %}
             {% endwith %}
             
-            <form method="POST" enctype="multipart/form-data" class="upload-form">
-                <div class="upload-area" id="upload-area">
-                    <div class="upload-content">
-                        <span class="upload-icon">📁</span>
+            <form method="POST" enctype="multipart/form-data" class="studypasa-upload-form">
+                <div class="studypasa-upload-area" id="studypasa-upload-area">
+                    <div class="studypasa-upload-content">
+                        <span class="studypasa-upload-icon">📁</span>
                         <p>Drag & drop your file here or click to browse</p>
-                        <input type="file" name="file" id="file-input" accept=".pdf,.docx,.pptx,.png,.jpg,.jpeg,.tiff,.bmp" required>
+                        <input type="file" name="file" id="studypasa-file-input" accept=".pdf,.docx,.doc,.pptx,.png,.jpg,.jpeg,.tiff,.bmp" required>
                     </div>
                 </div>
                 
-                <div class="file-info" id="file-info" style="display: none;">
-                    <span class="file-name"></span>
-                    <span class="file-size"></span>
+                <div class="studypasa-file-info" id="studypasa-file-info" style="display: none;">
+                    <span class="studypasa-file-name"></span>
+                    <span class="studypasa-file-size"></span>
                 </div>
                 
-                <button type="submit" class="btn btn-primary" id="submit-btn" disabled>
-                    <span class="btn-text">Generate MCQs</span>
-                    <div class="spinner" style="display: none;"></div>
+                <button type="submit" class="studypasa-btn studypasa-btn-primary" id="studypasa-submit-btn" disabled>
+                    <span class="studypasa-btn-text">Generate MCQs</span>
+                    <div class="studypasa-spinner" style="display: none;"></div>
                 </button>
             </form>
             
-            <div class="supported-formats">
+            <div class="studypasa-supported-formats">
                 <h3>Supported Formats:</h3>
-                <div class="format-list">
-                    <span class="format-item">📄 PDF</span>
-                    <span class="format-item">📝 DOCX</span>
-                    <span class="format-item">📊 PPTX</span>
-                    <span class="format-item">🖼️ PNG</span>
-                    <span class="format-item">📸 JPG</span>
-                    <span class="format-item">🖼️ TIFF</span>
-                    <span class="format-item">📱 BMP</span>
+                <div class="studypasa-format-list">
+                    <span class="studypasa-format-item">📄 PDF</span>
+                    <span class="studypasa-format-item">📝 DOC/DOCX</span>
+                    <span class="studypasa-format-item">📊 PPTX</span>
+                    <span class="studypasa-format-item">🖼️ PNG</span>
+                    <span class="studypasa-format-item">📸 JPG</span>
+                    <span class="studypasa-format-item">🖼️ TIFF</span>
+                    <span class="studypasa-format-item">📱 BMP</span>
                 </div>
             </div>
         </div>
     </div>
     
     <script>
-        const uploadArea = document.getElementById('upload-area');
-        const fileInput = document.getElementById('file-input');
-        const fileInfo = document.getElementById('file-info');
-        const submitBtn = document.getElementById('submit-btn');
-        const form = document.querySelector('.upload-form');
+        const studypasaUploadArea = document.getElementById('studypasa-upload-area');
+        const studypasaFileInput = document.getElementById('studypasa-file-input');
+        const studypasaFileInfo = document.getElementById('studypasa-file-info');
+        const studypasaSubmitBtn = document.getElementById('studypasa-submit-btn');
+        const studypasaForm = document.querySelector('.studypasa-upload-form');
         
         // File upload handling
-        uploadArea.addEventListener('click', () => fileInput.click());
+        studypasaUploadArea.addEventListener('click', () => studypasaFileInput.click());
         
-        uploadArea.addEventListener('dragover', (e) => {
+        studypasaUploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.classList.add('drag-over');
+            studypasaUploadArea.classList.add('drag-over');
         });
         
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('drag-over');
+        studypasaUploadArea.addEventListener('dragleave', () => {
+            studypasaUploadArea.classList.remove('drag-over');
         });
         
-        uploadArea.addEventListener('drop', (e) => {
+        studypasaUploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
-            uploadArea.classList.remove('drag-over');
+            studypasaUploadArea.classList.remove('drag-over');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                fileInput.files = files;
-                handleFileSelect();
+                studypasaFileInput.files = files;
+                studypasaHandleFileSelect();
             }
         });
         
-        fileInput.addEventListener('change', handleFileSelect);
+        studypasaFileInput.addEventListener('change', studypasaHandleFileSelect);
         
-        function handleFileSelect() {
-            const file = fileInput.files[0];
+        function studypasaHandleFileSelect() {
+            const file = studypasaFileInput.files[0];
             if (file) {
                 const fileName = file.name;
                 const fileSize = (file.size / 1024 / 1024).toFixed(2) + ' MB';
                 
-                fileInfo.querySelector('.file-name').textContent = fileName;
-                fileInfo.querySelector('.file-size').textContent = fileSize;
-                fileInfo.style.display = 'block';
+                studypasaFileInfo.querySelector('.studypasa-file-name').textContent = fileName;
+                studypasaFileInfo.querySelector('.studypasa-file-size').textContent = fileSize;
+                studypasaFileInfo.style.display = 'block';
                 
-                submitBtn.disabled = false;
-                uploadArea.classList.add('file-selected');
+                studypasaSubmitBtn.disabled = false;
+                studypasaUploadArea.classList.add('file-selected');
             }
         }
         
         // Form submission handling
-        form.addEventListener('submit', (e) => {
-            submitBtn.disabled = true;
-            submitBtn.querySelector('.btn-text').style.display = 'none';
-            submitBtn.querySelector('.spinner').style.display = 'inline';
+        studypasaForm.addEventListener('submit', (e) => {
+            studypasaSubmitBtn.disabled = true;
+            studypasaSubmitBtn.querySelector('.studypasa-btn-text').style.display = 'none';
+            studypasaSubmitBtn.querySelector('.studypasa-spinner').style.display = 'inline';
         });
     </script>
 </body>

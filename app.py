@@ -10,6 +10,8 @@ import pytesseract
 from quizpasa import handle_chat_message, get_welcome_message
 from flask import session
 
+
+import docx2txt
 from docx import Document
 from pptx import Presentation
 import tempfile
@@ -39,10 +41,106 @@ app.config['SESSION_KEY_PREFIX'] = 'studypasa:'
 # Ensure uploads directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
-ALLOWED_EXTENSIONS = {'pdf', 'docx', 'pptx', 'png', 'jpg', 'jpeg', 'tiff', 'bmp'}
+ALLOWED_EXTENSIONS = {'pdf', 'docx', 'doc', 'pptx', 'png', 'jpg', 'jpeg', 'tiff', 'bmp'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+
+def validate_file_content(file_path, file_ext):
+    """Validate file content before processing"""
+    try:
+        # Check if file is empty
+        if os.path.getsize(file_path) == 0:
+            return False, 'The file is empty'
+            
+        # Basic validation based on file type
+        if file_ext in ['doc', 'docx']:
+            try:
+                if file_ext == 'doc':
+                    # Use docx2txt for .doc files
+                    text = docx2txt.process(file_path)
+                    if not text or not text.strip():
+                        return False, 'The document contains no readable text'
+                else:
+                    # Use python-docx for .docx files
+                    doc = Document(file_path)
+                    has_content = False
+                    
+                    # Check paragraphs
+                    for paragraph in doc.paragraphs:
+                        if paragraph.text.strip():
+                            has_content = True
+                            break
+                    
+                    # Check tables if no paragraph content
+                    if not has_content:
+                        for table in doc.tables:
+                            for row in table.rows:
+                                for cell in row.cells:
+                                    if cell.text.strip():
+                                        has_content = True
+                                        break
+                                if has_content:
+                                    break
+                            if has_content:
+                                break
+                    
+                    if not has_content:
+                        return False, 'The document contains no readable text'
+                        
+                return True, ''
+                
+            except Exception as e:
+                return False, f'The document appears to be corrupted or invalid: {str(e)}'
+                
+        elif file_ext == 'pdf':
+            try:
+                with pdfplumber.open(file_path) as pdf:
+                    if len(pdf.pages) == 0:
+                        return False, 'The PDF contains no pages'
+                    return True, ''
+            except Exception as e:
+                return False, f'The PDF appears to be corrupted or password protected: {str(e)}'
+                
+        elif file_ext == 'pptx':
+            try:
+                prs = Presentation(file_path)
+                if len(prs.slides) == 0:
+                    return False, 'The presentation contains no slides'
+                # Check if any slide has text
+                has_text = False
+                for slide in prs.slides:
+                    for shape in slide.shapes:
+                        if hasattr(shape, 'text') and shape.text.strip():
+                            has_text = True
+                            break
+                    if has_text:
+                        break
+                if not has_text:
+                    return False, 'The presentation contains no readable text'
+                return True, ''
+            except Exception as e:
+                return False, f'The presentation appears to be corrupted or invalid: {str(e)}'
+                    
+        elif file_ext in ['png', 'jpg', 'jpeg', 'tiff', 'bmp']:
+            try:
+                with Image.open(file_path) as img:
+                    # Check if image is not completely blank or black
+                    extrema = img.convert('L').getextrema()
+                    if extrema[0] == extrema[1]:  # All pixels are the same value
+                        return False, 'The image appears to be blank or contains no content'
+                    # Check if image is too small for reliable OCR
+                    if img.size[0] < 50 or img.size[1] < 50:
+                        return False, 'The image is too small for text extraction'
+                    return True, ''
+            except Exception as e:
+                return False, f'The image appears to be corrupted or in an invalid format: {str(e)}'
+                
+    except Exception as e:
+        return False, f'Error validating file: {str(e)}'
+
 
 def setup_tesseract():
     """Enhanced Tesseract setup with better path detection"""
@@ -342,38 +440,58 @@ def extract_text_from_pdf(file_path):
     
     return text
 
+
 def extract_text_from_docx(file_path):
-    """Enhanced DOCX text extraction with image OCR"""
+    """Enhanced DOCX/DOC text extraction with image OCR"""
     text = ""
     
     try:
-        print(f"Processing DOCX: {file_path}")
+        file_ext = file_path.rsplit('.', 1)[1].lower()
+        print(f"Processing {file_ext.upper()}: {file_path}")
         
-        # Extract regular text
-        doc = Document(file_path)
-        for paragraph in doc.paragraphs:
-            text += paragraph.text + "\n"
+        if file_ext == 'doc':
+            # Handle .doc files using docx2txt
+            text = docx2txt.process(file_path)
+            print(f"DOC text extracted: {len(text)} characters")
+        elif file_ext == 'docx':
+            # Handle .docx files using python-docx (for better table support)
+            doc = Document(file_path)
+            
+            # Extract text from paragraphs
+            for paragraph in doc.paragraphs:
+                if paragraph.text.strip():  # Only add non-empty paragraphs
+                    text += paragraph.text + "\n"
+            
+            # Extract text from tables
+            for table in doc.tables:
+                for row in table.rows:
+                    for cell in row.cells:
+                        if cell.text.strip():  # Only add non-empty cells
+                            text += cell.text + "\n"
+            
+            print(f"DOCX text extracted: {len(text)} characters")
         
-        # Extract text from tables
-        for table in doc.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    text += cell.text + " "
-                text += "\n"
+        # Extract text from images in DOCX (only for .docx files)
+        if file_ext == 'docx' and setup_tesseract():
+            try:
+                image_text = extract_images_from_docx(file_path)
+                if image_text:
+                    text += "\n=== TEXT FROM IMAGES ===\n" + image_text
+            except Exception as e:
+                print(f"Error extracting images from DOCX: {e}")
         
-        print(f"DOCX text extracted: {len(text)} characters")
+        # If no text was extracted, provide a helpful message
+        if not text.strip():
+            print(f"No text extracted from {file_ext.upper()} file")
+            return ""
         
-        # Extract text from images
-        if setup_tesseract():
-            image_text = extract_images_from_docx(file_path)
-            if image_text:
-                text += "\n=== TEXT FROM IMAGES ===\n" + image_text
-    
+        return text.strip()
+        
     except Exception as e:
-        print(f"Error extracting text from DOCX: {e}")
-    
-    return text
+        print(f"Error extracting text from DOCX/DOC: {e}")
+        return ""
 
+    
 def extract_text_from_pptx(file_path):
     """Enhanced PPTX text extraction with image OCR"""
     text = ""
@@ -672,11 +790,21 @@ def upload():
             # Extract text based on file type
             file_ext = filename.rsplit('.', 1)[1].lower()
             text = ""
+            print(f"Processing file: {filename} (type: {file_ext})")
+            file_size = os.path.getsize(file_path)
+            print(f"File size: {file_size/1024:.2f} KB")
+            
+            # Validate file content before processing
+            is_valid, validation_error = validate_file_content(file_path, file_ext)
+            if not is_valid:
+                flash(validation_error, 'error')
+                os.remove(file_path)
+                return redirect(request.url)
             
             try:
                 if file_ext == 'pdf':
                     text = extract_text_from_pdf(file_path)
-                elif file_ext == 'docx':
+                elif file_ext in ['docx', 'doc']:
                     text = extract_text_from_docx(file_path)
                 elif file_ext == 'pptx':
                     text = extract_text_from_pptx(file_path)
@@ -686,7 +814,13 @@ def upload():
                 print(f"Total extracted text length: {len(text)} characters")
                 
                 if not text.strip():
-                    flash('No text could be extracted from the file. Please ensure the file contains readable text.', 'error')
+                    error_msg = 'No text could be extracted from the file. This might be because:\n'
+                    error_msg += '- The file is password protected\n'
+                    error_msg += '- The file contains scanned images without OCR\n'
+                    error_msg += '- The file is corrupted or empty\n'
+                    error_msg += '- The file contains only non-text content (like images)\n\n'
+                    error_msg += 'Please ensure the file contains readable text and try again.'
+                    flash(error_msg, 'error')
                     os.remove(file_path)
                     return redirect(request.url)
                 
@@ -709,15 +843,25 @@ def upload():
                 
                 return render_template('quiz.html', mcqs=mcqs, flashcards=flashcards, filename=filename)
                 
+            except (PermissionError, OSError) as e:
+                print(f"File access error: {e}")
+                flash('Unable to access the file. The file might be in use or you may not have permission to read it.', 'error')
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+                return redirect(request.url)
             except Exception as e:
                 print(f"Exception during processing: {e}")
-                flash(f'Error processing file: {str(e)}', 'error')
+                error_msg = 'Error processing file. Please check that:\n'
+                error_msg += '- The file is not corrupted\n'
+                error_msg += '- The file format matches its extension\n'
+                error_msg += '- The file is not encrypted or password protected'
+                flash(error_msg, 'error')
                 if os.path.exists(file_path):
                     os.remove(file_path)
                 return redirect(request.url)
         
         else:
-            flash('Invalid file type. Please upload PDF, DOCX, PPTX, or image files.', 'error')
+            flash('Invalid file type. Please upload PDF, DOC, DOCX, PPTX, or image files.', 'error')
     
     return render_template('upload.html')
 

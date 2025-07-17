@@ -21,52 +21,6 @@ body {
     justify-content: center;
 }
 
-/* Homepage Styles */
-.hero-section {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 60px 40px;
-    text-align: center;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    max-width: 600px;
-}
-
-.hero-section h1 {
-    font-size: 3rem;
-    margin-bottom: 20px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero-section p {
-    font-size: 1.2rem;
-    margin-bottom: 40px;
-    color: #666;
-}
-
-.features {
-    display: flex;
-    justify-content: center;
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-.feature {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 1rem;
-    color: #555;
-}
-
-.feature .icon {
-    font-size: 1.5rem;
-}
-
-/* Upload Page Styles */
 .upload-section {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(10px);
@@ -177,6 +131,7 @@ body {
     display: flex;
     justify-content: center;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .format-item {
@@ -187,153 +142,6 @@ body {
     color: #667eea;
 }
 
-/* Quiz Page Styles */
-.quiz-section {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 40px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    width: 100%;
-}
-
-.quiz-section h1 {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #333;
-}
-
-.quiz-section p {
-    text-align: center;
-    margin-bottom: 30px;
-    color: #666;
-}
-
-.quiz-stats {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding: 15px;
-    background: rgba(102, 126, 234, 0.1);
-    border-radius: 10px;
-}
-
-.total-questions, .score {
-    font-weight: 600;
-    color: #667eea;
-}
-
-.question-card {
-    background: white;
-    border-radius: 15px;
-    padding: 25px;
-    margin-bottom: 25px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(102, 126, 234, 0.2);
-}
-
-.question-header h3 {
-    color: #667eea;
-    margin-bottom: 15px;
-}
-
-.question-text {
-    font-size: 1.1rem;
-    margin-bottom: 20px;
-    color: #333;
-    line-height: 1.5;
-}
-
-.options {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
-.option-btn {
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    background: rgba(248, 249, 250, 0.8);
-    border: 2px solid #e9ecef;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 1rem;
-    text-align: left;
-}
-
-.option-btn:hover:not(:disabled) {
-    background: rgba(102, 126, 234, 0.1);
-    border-color: #667eea;
-}
-
-.option-btn:disabled {
-    cursor: not-allowed;
-}
-
-.option-btn.correct {
-    background: rgba(40, 167, 69, 0.1);
-    border-color: #28a745;
-    color: #28a745;
-}
-
-.option-btn.incorrect {
-    background: rgba(220, 53, 69, 0.1);
-    border-color: #dc3545;
-    color: #dc3545;
-}
-
-.option-label {
-    font-weight: 600;
-    margin-right: 10px;
-    min-width: 25px;
-}
-
-.option-text {
-    flex: 1;
-}
-
-.feedback {
-    margin-top: 15px;
-    padding: 15px;
-    border-radius: 10px;
-    border: 1px solid;
-}
-
-.feedback.correct {
-    background: rgba(40, 167, 69, 0.1);
-    border-color: #28a745;
-    color: #28a745;
-}
-
-.feedback.incorrect {
-    background: rgba(220, 53, 69, 0.1);
-    border-color: #dc3545;
-    color: #dc3545;
-}
-
-.feedback-content {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.feedback-icon {
-    font-size: 1.2rem;
-}
-
-.quiz-actions {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 30px;
-}
-
-/* Button Styles */
 .btn {
     display: inline-block;
     padding: 15px 30px;
@@ -345,47 +153,44 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     text-align: center;
-    position: relative;
-    overflow: hidden;
+    width: 100%;
 }
 
 .btn-primary {
     background: linear-gradient(135deg, #667eea, #764ba2);
     color: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
     transform: translateY(-2px);
     box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
 }
 
-.btn-secondary {
-    background: #6c757d;
-    color: white;
-}
-
-.btn-secondary:hover {
-    background: #5a6268;
-    transform: translateY(-2px);
-}
-
-.btn:disabled {
-    opacity: 0.6;
+.btn-primary:disabled {
+    opacity: 0.7;
     cursor: not-allowed;
-    transform: none;
 }
 
 .spinner {
     display: inline-block;
-    animation: spin 1s linear infinite;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 8px;
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    to { transform: rotate(360deg); }
 }
 
-/* Alert Messages */
 .messages {
     margin-bottom: 20px;
 }
@@ -409,62 +214,28 @@ body {
     color: #dc3545;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
     .container {
         padding: 10px;
     }
     
-    .hero-section {
-        padding: 40px 20px;
-    }
-    
-    .hero-section h1 {
-        font-size: 2.5rem;
-    }
-    
-    .features {
-        flex-direction: column;
-        gap: 15px;
-    }
-    
-    .upload-section,
-    .quiz-section {
+    .upload-section {
         padding: 20px;
     }
     
-    .quiz-stats {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
-    }
-    
-    .quiz-actions {
-        flex-direction: column;
-    }
-    
     .format-list {
-        flex-direction: column;
         gap: 10px;
     }
 }
 
 @media (max-width: 480px) {
-    .hero-section h1 {
-        font-size: 2rem;
-    }
-    
     .upload-area {
         padding: 40px 15px;
     }
     
-    .question-card {
-        padding: 20px;
-    }
-    
-    .option-btn {
-        padding: 12px;
-        font-size: 0.9rem;
+    .format-list {
+        flex-direction: column;
+        align-items: center;
     }
 }
 

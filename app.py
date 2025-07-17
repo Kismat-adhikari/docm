@@ -8,6 +8,7 @@ import pdfplumber
 from pdf2image import convert_from_path
 import pytesseract
 from quizpasa import handle_chat_message, get_welcome_message
+from flask import session
 
 from docx import Document
 from pptx import Presentation
@@ -32,6 +33,9 @@ app.config['SESSION_TYPE'] = 'filesystem'
 app.config['SESSION_PERMANENT'] = False
 app.config['SESSION_USE_SIGNER'] = True
 app.config['SESSION_KEY_PREFIX'] = 'studypasa:'
+
+
+
 # Ensure uploads directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
@@ -732,37 +736,6 @@ def check_answer():
         'correct_answer': correct_answer
     })
 
-# Add this route to app.py (place it with your other routes)
-@app.route('/quizpasa_chat', methods=['POST'])
-def quizpasa_chat():
-    """Handle chatbot messages"""
-    try:
-        data = request.get_json()
-        user_message = data.get('message', '').strip()
-        conversation_history = data.get('history', [])
-        
-        if not user_message:
-            return jsonify({
-                'success': False,
-                'error': 'No message provided'
-            }), 400
-        
-        # Handle special commands
-        if user_message.lower() in ['hi', 'hello', 'hey']:
-            response = get_welcome_message()
-        else:
-            # Get response from QuizPasa
-            response = handle_chat_message(user_message, conversation_history)
-        
-        return jsonify(response)
-        
-    except Exception as e:
-        return jsonify({
-            'success': False,
-            'message': 'Sorry, I encountered an error. Please try again!',
-            'error': str(e)
-        }), 500
-
 
 
 @app.route('/session_data')
@@ -800,6 +773,63 @@ def clear_session_data():
         'message': 'Session data cleared'
     })
 
+# 🧠 Main chat with session data (unchanged)
+@app.route('/quizpasa_chat', methods=['POST'])
+def quizpasa_chat():
+    """Handle chat messages and provide responses with session context"""
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '')
+        conversation_history = data.get('conversation_history', [])
+        
+        # Get current session data
+        session_data = {
+            'mcqs': session.get('mcqs', []),
+            'flashcards': session.get('flashcards', [])
+        }
+        
+        # Get response from QuizPasa with session context
+        response = handle_chat_message(user_message, conversation_history, session_data)
+        return jsonify(response)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'An error occurred while processing your message.',
+            'error': str(e)
+        }), 500
+
+
+# 🤖 Simpler fallback chat route (renamed)
+@app.route('/quizpasa_chat_simple', methods=['POST'])
+def quizpasa_chat_simple():
+    """Handle basic chatbot messages"""
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '').strip()
+        conversation_history = data.get('history', [])
+        
+        if not user_message:
+            return jsonify({
+                'success': False,
+                'error': 'No message provided'
+            }), 400
+        
+        # Handle special commands
+        if user_message.lower() in ['hi', 'hello', 'hey']:
+            response = get_welcome_message()
+        else:
+            # Get response from QuizPasa
+            response = handle_chat_message(user_message, conversation_history)
+        
+        return jsonify(response)
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': 'Sorry, I encountered an error. Please try again!',
+            'error': str(e)
+        }), 500
 
 
 

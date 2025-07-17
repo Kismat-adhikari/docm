@@ -37,13 +37,14 @@ class QuizPasa:
         """Check if API key is properly configured"""
         return self.api_key and self.api_key != "your-quiz-api-key-here"
     
-    def get_chat_response(self, user_message, conversation_history=None):
+    def get_chat_response(self, user_message, conversation_history=None, session_data=None):
         """
         Get a response from the chatbot for the given user message
         
         Args:
             user_message (str): The user's message
             conversation_history (list): Previous conversation messages (optional)
+            session_data (dict): Current session data containing MCQs and flashcards (optional)
             
         Returns:
             dict: Response containing success status, message, and error if any
@@ -63,9 +64,29 @@ class QuizPasa:
                 "Content-Type": "application/json"
             }
             
-            # Prepare messages
+            # Prepare messages with session context if available
+            system_message = self.system_prompt
+            
+            if session_data and (session_data.get('mcqs') or session_data.get('flashcards')):
+                context = "\nCurrent study materials:\n"
+                
+                if session_data.get('mcqs'):
+                    context += "\nMCQs:\n"
+                    for i, mcq in enumerate(session_data['mcqs'], 1):
+                        context += f"Question {i}: {mcq['question']}\n"
+                        for j, option in enumerate(mcq['options']):
+                            context += f"  {chr(65+j)}) {option}\n"
+                        context += f"Correct Answer: {chr(65+mcq['correct_answer'])}\n"
+                
+                if session_data.get('flashcards'):
+                    context += "\nFlashcards:\n"
+                    for i, card in enumerate(session_data['flashcards'], 1):
+                        context += f"Card {i}:\n  Front: {card['front']}\n  Back: {card['back']}\n"
+                
+                system_message += "\n\nYou have access to the following study materials. Use this context to provide relevant answers:\n" + context
+            
             messages = [
-                {"role": "system", "content": self.system_prompt}
+                {"role": "system", "content": system_message}
             ]
             
             # Add conversation history if provided
@@ -156,18 +177,27 @@ class QuizPasa:
 # Initialize QuizPasa instance
 quiz_pasa = QuizPasa()
 
-def handle_chat_message(user_message, conversation_history=None):
+def handle_chat_message(user_message, conversation_history=None, session_data=None):
     """
     Main function to handle chat messages from the Flask app
     
     Args:
         user_message (str): The user's message
         conversation_history (list): Previous conversation messages
+        session_data (dict): Current session data containing MCQs and flashcards
         
     Returns:
         dict: Response from QuizPasa
     """
-    return quiz_pasa.get_chat_response(user_message, conversation_history)
+    if not session_data or (not session_data.get('mcqs') and not session_data.get('flashcards')):
+        if any(keyword in user_message.lower() for keyword in ['explain', 'question', 'answer', 'mcq', 'flashcard']):
+            return {
+                "success": True,
+                "message": "I don't see any study materials in your current session. Please upload a document first to generate MCQs and flashcards, then I can help you understand them better!",
+                "timestamp": datetime.now().isoformat()
+            }
+    
+    return quiz_pasa.get_chat_response(user_message, conversation_history, session_data)
 
 def get_welcome_message():
     """Get welcome message for new sessions"""

@@ -77,39 +77,58 @@
     
 
 
-    <div class="quizpasa-container">
-    <!-- Floating Mascot Button -->
-    <div class="quizpasa-mascot" id="quizpasa-mascot">
-        <img src="{{ url_for('static', filename='images/mr.pasa.png') }}" alt="QuizPasa" />
-    </div>
-    
-    <!-- Chatbox -->
-    <div class="quizpasa-chatbox" id="quizpasa-chatbox">
-        <div class="quizpasa-header">
-            <h3 class="quizpasa-title">QuizPasa - Your Study Assistant</h3>
-            <button class="quizpasa-close" id="quizpasa-close">×</button>
+ <div class="quizpasa-container">
+        <!-- Floating Mascot Button -->
+        <div class="quizpasa-mascot" id="quizpasa-mascot">
+            <img src="https://via.placeholder.com/45x45/667eea/ffffff?text=QP" alt="QuizPasa" />
+            <!-- Uncomment below for notification badge -->
+            <!-- <div class="quizpasa-notification">1</div> -->
         </div>
         
-        <div class="quizpasa-messages" id="quizpasa-messages">
-            <!-- Messages will be dynamically added here -->
-        </div>
+        <!-- Chatbox -->
+        <div class="quizpasa-chatbox" id="quizpasa-chatbox">
+            <div class="quizpasa-header">
+                <h3 class="quizpasa-title">QuizPasa Assistant</h3>
+                <button class="quizpasa-close" id="quizpasa-close">×</button>
+            </div>
+            
+            <div class="quizpasa-messages" id="quizpasa-messages">
+                <!-- Sample messages for demonstration -->
+                <div class="quizpasa-message bot">
+                    Hi! I'm QuizPasa, your friendly study assistant! 🎓
+                    
+                    I'm here to help you with:
+                    • Study techniques and tips
+                    • Understanding your MCQs and flashcards
+                    • Learning strategies
+                    • Academic questions
+                    
+                    What would you like to know?
+                </div>
+            </div>
 
-        <div class="quizpasa-typing" id="quizpasa-typing">QuizPasa is typing...</div>
-        
-        <div class="quizpasa-input-container">
-            <input 
-                type="text" 
-                class="quizpasa-input" 
-                id="quizpasa-input"
-                placeholder="Ask me anything about studying..."
-            />
-            <button class="quizpasa-send" id="quizpasa-send" title="Send message">
-                ➤
-            </button>
+            <div class="quizpasa-typing" id="quizpasa-typing">
+                QuizPasa is typing...
+                <div class="quizpasa-typing-dots">
+                    <div class="quizpasa-typing-dot"></div>
+                    <div class="quizpasa-typing-dot"></div>
+                    <div class="quizpasa-typing-dot"></div>
+                </div>
+            </div>
+            
+            <div class="quizpasa-input-container">
+                <input 
+                    type="text" 
+                    class="quizpasa-input" 
+                    id="quizpasa-input"
+                    placeholder="Ask me anything about studying..."
+                />
+                <button class="quizpasa-send" id="quizpasa-send" title="Send message">
+                    ➤
+                </button>
+            </div>
         </div>
     </div>
-</div>
-
 <script src="/static/js/script.js"></script>
 </body>
 </html>

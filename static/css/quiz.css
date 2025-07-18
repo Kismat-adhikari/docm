@@ -1,3 +1,4 @@
+        /* Reset and Base Styles */
         * {
             margin: 0;
             padding: 0;
@@ -6,49 +7,56 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #1c1c1c 0%, #2a2a2a 100%);
+            background: #1c1c1c;
             color: #ffffff;
-            min-height: 100vh;
             line-height: 1.6;
+            overflow-x: hidden;
         }
 
+        /* Main Container */
         .studypasa-main-container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            min-height: 100vh;
         }
 
-        /* Quiz Section Styles */
+        /* Quiz Section */
         .studypasa-quiz-section {
-            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+            background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
             border-radius: 20px;
             padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid #333;
+        }
+
+        .studypasa-quiz-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f46464;
         }
 
         .studypasa-quiz-header h1 {
             font-size: 2.5rem;
-            background: linear-gradient(45deg, #f46464, #ff8a80);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
+            color: #f46464;
             margin-bottom: 10px;
-            text-align: center;
+            text-shadow: 0 2px 10px rgba(244, 100, 100, 0.3);
         }
 
         .studypasa-file-info {
-            text-align: center;
-            color: #cccccc;
             font-size: 1.1rem;
-            margin-bottom: 20px;
+            color: #cccccc;
+            margin-top: 8px;
         }
 
         .studypasa-file-info strong {
             color: #f46464;
         }
 
+        /* Quiz Metrics */
         .studypasa-quiz-metrics {
             display: flex;
             justify-content: space-between;
@@ -64,100 +72,78 @@
         .studypasa-score-display {
             font-size: 1.1rem;
             font-weight: 600;
+            color: #ffffff;
         }
 
-        .studypasa-score-display {
+        #studypasa-score-counter {
             color: #f46464;
+            font-weight: 700;
+            font-size: 1.2rem;
         }
 
-        .studypasa-quiz-wrapper {
-            display: grid;
-            gap: 25px;
-        }
-
+        /* Question Items */
         .studypasa-question-item {
-            background: linear-gradient(135deg, #333333, #2a2a2a);
+            background: linear-gradient(135deg, #2d2d2d 0%, #252525 100%);
             border-radius: 15px;
             padding: 25px;
+            margin-bottom: 25px;
             border: 1px solid #404040;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .studypasa-question-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, #f46464, #ff8a80);
         }
 
         .studypasa-question-item:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(244, 100, 100, 0.15);
+            box-shadow: 0 8px 25px rgba(244, 100, 100, 0.15);
+            border-color: #f46464;
         }
 
         .studypasa-question-number {
-            background: linear-gradient(45deg, #f46464, #ff8a80);
+            background: linear-gradient(135deg, #f46464 0%, #d54545 100%);
             color: white;
-            padding: 8px 15px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.9rem;
             font-weight: 600;
             display: inline-block;
             margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(244, 100, 100, 0.3);
         }
 
         .studypasa-question-content {
             font-size: 1.2rem;
             font-weight: 500;
-            margin-bottom: 20px;
             color: #ffffff;
-            line-height: 1.5;
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
+        /* Answer Options */
         .studypasa-answer-options {
             display: grid;
             gap: 12px;
+            margin-bottom: 15px;
         }
 
         .studypasa-option-button {
-            background: linear-gradient(135deg, #404040, #353535);
-            border: 2px solid #505050;
-            color: #ffffff;
-            padding: 15px 20px;
+            background: linear-gradient(135deg, #3a3a3a 0%, #2e2e2e 100%);
+            border: 2px solid #404040;
             border-radius: 12px;
+            padding: 15px 20px;
+            text-align: left;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 15px;
             font-size: 1rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .studypasa-option-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(244, 100, 100, 0.1), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .studypasa-option-button:hover::before {
-            left: 100%;
+            color: #ffffff;
         }
 
         .studypasa-option-button:hover {
+            background: linear-gradient(135deg, #4a4a4a 0%, #3e3e3e 100%);
             border-color: #f46464;
-            transform: translateX(5px);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(244, 100, 100, 0.2);
         }
 
         .studypasa-option-button:disabled {
@@ -165,75 +151,93 @@
             opacity: 0.7;
         }
 
-        .studypasa-option-button.studypasa-correct-answer {
-            background: linear-gradient(135deg, #4caf50, #45a049);
-            border-color: #4caf50;
-        }
-
-        .studypasa-option-button.studypasa-wrong-answer {
-            background: linear-gradient(135deg, #f44336, #d32f2f);
-            border-color: #f44336;
-        }
-
         .studypasa-option-label {
             background: #f46464;
             color: white;
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
             flex-shrink: 0;
         }
 
         .studypasa-option-text {
             flex: 1;
+            line-height: 1.4;
         }
 
-        .studypasa-answer-feedback {
-            margin-top: 15px;
-            padding: 15px;
-            border-radius: 10px;
-            display: none;
-            animation: slideDown 0.3s ease;
+        .studypasa-option-button.studypasa-correct-answer {
+            background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+            border-color: #4caf50;
+            color: white;
         }
 
-        .studypasa-answer-feedback.studypasa-correct-feedback {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid rgba(76, 175, 80, 0.3);
+        .studypasa-option-button.studypasa-wrong-answer {
+            background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+            border-color: #f44336;
+            color: white;
+        }
+
+        .studypasa-option-button.studypasa-correct-answer .studypasa-option-label {
+            background: #ffffff;
             color: #4caf50;
         }
 
-        .studypasa-answer-feedback.studypasa-incorrect-feedback {
-            background: rgba(244, 67, 54, 0.1);
-            border: 1px solid rgba(244, 67, 54, 0.3);
+        .studypasa-option-button.studypasa-wrong-answer .studypasa-option-label {
+            background: #ffffff;
             color: #f44336;
+        }
+
+        /* Answer Feedback */
+        .studypasa-answer-feedback {
+            display: none;
+            background: rgba(244, 100, 100, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #f46464;
         }
 
         .studypasa-feedback-content {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-weight: 500;
         }
 
         .studypasa-feedback-icon {
             font-size: 1.2rem;
         }
 
-        /* Quiz Actions */
+        .studypasa-feedback-text {
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .studypasa-correct-feedback {
+            background: rgba(76, 175, 80, 0.1);
+            border-left-color: #4caf50;
+        }
+
+        .studypasa-incorrect-feedback {
+            background: rgba(244, 67, 54, 0.1);
+            border-left-color: #f44336;
+        }
+
+        /* Quiz Controls */
         .studypasa-quiz-controls {
             display: flex;
             gap: 15px;
             justify-content: center;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .studypasa-btn {
-            padding: 12px 30px;
+            padding: 12px 24px;
             border: none;
             border-radius: 25px;
             font-size: 1rem;
@@ -241,46 +245,52 @@
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .studypasa-btn-secondary {
-            background: linear-gradient(135deg, #666666, #555555);
-            color: white;
-        }
-
-        .studypasa-btn-secondary:hover {
-            background: linear-gradient(135deg, #777777, #666666);
-            transform: translateY(-2px);
+            display: inline-block;
+            text-align: center;
+            min-width: 140px;
         }
 
         .studypasa-btn-primary {
-            background: linear-gradient(135deg, #f46464, #ff8a80);
+            background: linear-gradient(135deg, #f46464 0%, #d54545 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(244, 100, 100, 0.3);
         }
 
         .studypasa-btn-primary:hover {
-            background: linear-gradient(135deg, #ff8a80, #f46464);
+            background: linear-gradient(135deg, #e55555 0%, #c63636 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 100, 100, 0.4);
+        }
+
+        .studypasa-btn-secondary {
+            background: linear-gradient(135deg, #4a4a4a 0%, #3e3e3e 100%);
+            color: white;
+            border: 2px solid #666;
+        }
+
+        .studypasa-btn-secondary:hover {
+            background: linear-gradient(135deg, #5a5a5a 0%, #4e4e4e 100%);
+            border-color: #f46464;
             transform: translateY(-2px);
         }
 
         /* Flashcard Section */
         .studypasa-flashcard-section {
-            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+            background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
             border-radius: 20px;
             padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
             border: 1px solid #333;
         }
 
         .studypasa-flashcard-section h2 {
-            font-size: 2rem;
             color: #f46464;
-            margin-bottom: 20px;
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 25px;
             text-align: center;
+            text-shadow: 0 2px 10px rgba(244, 100, 100, 0.3);
         }
 
         .studypasa-flashcard-grid {
@@ -290,22 +300,21 @@
         }
 
         .studypasa-flashcard-item {
-            background: linear-gradient(135deg, #333333, #2a2a2a);
+            background: linear-gradient(135deg, #2d2d2d 0%, #252525 100%);
             border-radius: 15px;
-            height: 200px;
+            min-height: 200px;
             cursor: pointer;
-            transition: all 0.6s ease;
-            transform-style: preserve-3d;
-            position: relative;
+            transition: all 0.3s ease;
+            perspective: 1000px;
             border: 1px solid #404040;
+            position: relative;
+            overflow: hidden;
         }
 
         .studypasa-flashcard-item:hover {
-            box-shadow: 0 15px 30px rgba(244, 100, 100, 0.2);
-        }
-
-        .studypasa-flashcard-item.studypasa-flipped {
-            transform: rotateY(180deg);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(244, 100, 100, 0.2);
+            border-color: #f46464;
         }
 
         .studypasa-flashcard-front,
@@ -319,74 +328,67 @@
             justify-content: center;
             padding: 20px;
             border-radius: 15px;
-            text-align: center;
+            transition: transform 0.6s ease;
         }
 
         .studypasa-flashcard-front {
-            background: linear-gradient(135deg, #f46464, #ff8a80);
+            background: linear-gradient(135deg, #f46464 0%, #d54545 100%);
             color: white;
         }
 
         .studypasa-flashcard-back {
-            background: linear-gradient(135deg, #333333, #2a2a2a);
-            color: #ffffff;
+            background: linear-gradient(135deg, #3a3a3a 0%, #2e2e2e 100%);
+            color: white;
             transform: rotateY(180deg);
         }
 
+        .studypasa-flashcard-item.studypasa-flipped .studypasa-flashcard-front {
+            transform: rotateY(180deg);
+        }
+
+        .studypasa-flashcard-item.studypasa-flipped .studypasa-flashcard-back {
+            transform: rotateY(0deg);
+        }
+
         .studypasa-flashcard-front h3 {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 600;
+            text-align: center;
+            line-height: 1.4;
         }
 
         .studypasa-flashcard-back p {
-            font-size: 1rem;
+            font-size: 1.1rem;
+            text-align: center;
             line-height: 1.5;
         }
 
-        /* Assistant Chatbot Styles */
+        /* Assistant Chatbot */
         .studypasa-assistant-container {
             position: fixed;
             bottom: 20px;
             right: 20px;
             z-index: 1000;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         .studypasa-assistant-trigger {
             width: 60px;
             height: 60px;
             border-radius: 50%;
-            background: linear-gradient(135deg, #f46464, #ff8a80);
+            background: linear-gradient(135deg, #f46464 0%, #d54545 100%);
             border: none;
             cursor: pointer;
+            box-shadow: 0 5px 20px rgba(244, 100, 100, 0.4);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 8px 25px rgba(244, 100, 100, 0.4);
-            transition: all 0.3s ease;
-            position: relative;
             overflow: hidden;
-        }
-
-        .studypasa-assistant-trigger::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: translateX(-100%);
-            transition: transform 0.6s ease;
-        }
-
-        .studypasa-assistant-trigger:hover::before {
-            transform: translateX(100%);
         }
 
         .studypasa-assistant-trigger:hover {
             transform: scale(1.1);
-            box-shadow: 0 12px 30px rgba(244, 100, 100, 0.5);
+            box-shadow: 0 7px 25px rgba(244, 100, 100, 0.6);
         }
 
         .studypasa-assistant-trigger img {
@@ -395,52 +397,42 @@
             border-radius: 50%;
         }
 
-        .studypasa-assistant-notification {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ff3333;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
         .studypasa-assistant-panel {
-            position: absolute;
-            bottom: 80px;
-            right: 0;
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
             width: 350px;
             height: 500px;
-            background: linear-gradient(145deg, #2a2a2a, #1e1e1e);
+            background: linear-gradient(135deg, #2a2a2a 0%, #1e1e1e 100%);
             border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
             border: 1px solid #404040;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            display: none;
+            display: flex;
             flex-direction: column;
-            overflow: hidden;
-            animation: slideUp 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s ease;
+            pointer-events: none;
         }
 
         .studypasa-assistant-panel.studypasa-panel-active {
-            display: flex;
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
         }
 
         .studypasa-assistant-header {
-            background: linear-gradient(135deg, #f46464, #ff8a80);
-            color: white;
             padding: 20px;
+            border-bottom: 1px solid #404040;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            background: rgba(244, 100, 100, 0.1);
+            border-radius: 20px 20px 0 0;
         }
 
         .studypasa-assistant-title {
+            color: #f46464;
             font-size: 1.2rem;
             font-weight: 600;
             margin: 0;
@@ -449,13 +441,12 @@
         .studypasa-assistant-close {
             background: none;
             border: none;
-            color: white;
+            color: #cccccc;
             font-size: 1.5rem;
             cursor: pointer;
-            padding: 5px;
-            border-radius: 50%;
             width: 30px;
             height: 30px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -463,17 +454,17 @@
         }
 
         .studypasa-assistant-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
+            background: rgba(244, 100, 100, 0.2);
+            color: #f46464;
         }
 
         .studypasa-conversation-area {
             flex: 1;
-            overflow-y: auto;
             padding: 20px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
         }
 
         .studypasa-conversation-area::-webkit-scrollbar {
@@ -481,7 +472,8 @@
         }
 
         .studypasa-conversation-area::-webkit-scrollbar-track {
-            background: #1e1e1e;
+            background: #2a2a2a;
+            border-radius: 3px;
         }
 
         .studypasa-conversation-area::-webkit-scrollbar-thumb {
@@ -490,46 +482,45 @@
         }
 
         .studypasa-message-bubble {
-            max-width: 85%;
             padding: 12px 16px;
-            border-radius: 18px;
-            font-size: 0.9rem;
+            border-radius: 15px;
+            max-width: 80%;
             line-height: 1.4;
-            animation: fadeIn 0.3s ease;
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
 
-        .studypasa-message-bubble.studypasa-user-message {
-            background: linear-gradient(135deg, #f46464, #ff8a80);
+        .studypasa-user-message {
+            background: linear-gradient(135deg, #f46464 0%, #d54545 100%);
             color: white;
             align-self: flex-end;
-            border-bottom-right-radius: 4px;
+            border-bottom-right-radius: 5px;
         }
 
-        .studypasa-message-bubble.studypasa-bot-message {
-            background: linear-gradient(135deg, #333333, #2a2a2a);
-            color: #ffffff;
+        .studypasa-bot-message {
+            background: linear-gradient(135deg, #3a3a3a 0%, #2e2e2e 100%);
+            color: white;
             align-self: flex-start;
-            border-bottom-left-radius: 4px;
+            border-bottom-left-radius: 5px;
             border: 1px solid #404040;
         }
 
         .studypasa-typing-indicator {
-            align-self: flex-start;
-            background: linear-gradient(135deg, #333333, #2a2a2a);
+            background: linear-gradient(135deg, #3a3a3a 0%, #2e2e2e 100%);
             color: #cccccc;
             padding: 12px 16px;
-            border-radius: 18px;
-            border-bottom-left-radius: 4px;
-            font-size: 0.9rem;
-            border: 1px solid #404040;
+            border-radius: 15px;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
             display: flex;
             align-items: center;
             gap: 10px;
+            border: 1px solid #404040;
         }
 
         .studypasa-typing-dots {
             display: flex;
-            gap: 4px;
+            gap: 3px;
         }
 
         .studypasa-typing-dot {
@@ -537,11 +528,27 @@
             height: 6px;
             background: #f46464;
             border-radius: 50%;
-            animation: typingPulse 1.4s ease-in-out infinite both;
+            animation: studypasa-typing 1.4s infinite;
         }
 
-        .studypasa-typing-dot:nth-child(1) { animation-delay: -0.32s; }
-        .studypasa-typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .studypasa-typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .studypasa-typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes studypasa-typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
 
         .studypasa-input-area {
             padding: 20px;
@@ -553,11 +560,11 @@
 
         .studypasa-message-input {
             flex: 1;
-            background: #333333;
-            border: 1px solid #505050;
+            background: #3a3a3a;
+            border: 1px solid #555;
+            border-radius: 20px;
+            padding: 10px 15px;
             color: white;
-            padding: 12px 16px;
-            border-radius: 25px;
             font-size: 0.9rem;
             outline: none;
             transition: all 0.3s ease;
@@ -565,93 +572,50 @@
 
         .studypasa-message-input:focus {
             border-color: #f46464;
-            box-shadow: 0 0 0 3px rgba(244, 100, 100, 0.2);
+            box-shadow: 0 0 10px rgba(244, 100, 100, 0.3);
         }
 
         .studypasa-message-input::placeholder {
-            color: #888888;
+            color: #888;
         }
 
         .studypasa-send-button {
-            background: linear-gradient(135deg, #f46464, #ff8a80);
+            background: linear-gradient(135deg, #f46464 0%, #d54545 100%);
             border: none;
-            color: white;
+            border-radius: 50%;
             width: 40px;
             height: 40px;
-            border-radius: 50%;
+            color: white;
             cursor: pointer;
+            font-size: 1.2rem;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
             transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(244, 100, 100, 0.3);
         }
 
-        .studypasa-send-button:hover {
-            background: linear-gradient(135deg, #ff8a80, #f46464);
+        .studypasa-send-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #e55555 0%, #c63636 100%);
             transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(244, 100, 100, 0.4);
         }
 
         .studypasa-send-button:disabled {
-            background: #666666;
+            opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Animations */
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes typingPulse {
-            0%, 80%, 100% {
-                transform: scale(0.8);
-                opacity: 0.6;
-            }
-            40% {
-                transform: scale(1);
-                opacity: 1;
-            }
         }
 
         /* Responsive Design */
         @media (max-width: 768px) {
             .studypasa-main-container {
-                padding: 10px;
+                padding: 15px;
             }
 
             .studypasa-quiz-section,
             .studypasa-flashcard-section {
                 padding: 20px;
+                margin-bottom: 30px;
             }
 
             .studypasa-quiz-header h1 {
@@ -664,17 +628,118 @@
                 text-align: center;
             }
 
-            .studypasa-assistant-panel {
-                width: 300px;
-                height: 450px;
+            .studypasa-question-item {
+                padding: 20px;
+            }
+
+            .studypasa-question-content {
+                font-size: 1.1rem;
+            }
+
+            .studypasa-option-button {
+                padding: 12px 15px;
+            }
+
+            .studypasa-option-label {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+
+            .studypasa-quiz-controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .studypasa-btn {
+                width: 100%;
+                max-width: 250px;
             }
 
             .studypasa-flashcard-grid {
                 grid-template-columns: 1fr;
             }
 
-            .studypasa-quiz-controls {
-                flex-direction: column;
-                align-items: center;
+            .studypasa-flashcard-item {
+                min-height: 150px;
+            }
+
+            .studypasa-assistant-panel {
+                width: calc(100vw - 40px);
+                right: 20px;
+                left: 20px;
+                height: 400px;
+            }
+
+            .studypasa-assistant-trigger {
+                width: 50px;
+                height: 50px;
+            }
+
+            .studypasa-assistant-trigger img {
+                width: 28px;
+                height: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .studypasa-main-container {
+                padding: 10px;
+            }
+
+            .studypasa-quiz-section,
+            .studypasa-flashcard-section {
+                padding: 15px;
+            }
+
+            .studypasa-quiz-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .studypasa-question-item {
+                padding: 15px;
+            }
+
+            .studypasa-question-content {
+                font-size: 1rem;
+            }
+
+            .studypasa-option-button {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .studypasa-assistant-panel {
+                height: 350px;
+                bottom: 80px;
+            }
+
+            .studypasa-conversation-area {
+                padding: 15px;
+            }
+
+            .studypasa-input-area {
+                padding: 15px;
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1400px) {
+            .studypasa-main-container {
+                max-width: 1400px;
+                padding: 30px;
+            }
+
+            .studypasa-quiz-section,
+            .studypasa-flashcard-section {
+                padding: 40px;
+            }
+
+            .studypasa-quiz-header h1 {
+                font-size: 3rem;
+            }
+
+            .studypasa-flashcard-grid {
+                grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             }
         }

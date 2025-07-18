@@ -841,7 +841,7 @@ def upload():
                 # Clean up uploaded file
                 os.remove(file_path)
                 
-                return render_template('quiz.html', mcqs=mcqs, flashcards=flashcards, filename=filename)
+                return render_template('quizmc.html', mcqs=mcqs, flashcards=flashcards, filename=filename)
                 
             except (PermissionError, OSError) as e:
                 print(f"File access error: {e}")

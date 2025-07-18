@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz - StudyPasa</title>
+    <link rel="stylesheet" href="/static/css/quizmc.css">
+</head>
+<body>
+    <div class="studypasa-main-container">
+        <!-- Quiz Section -->
+        <div class="studypasa-quiz-section">
+            <div class="studypasa-quiz-header">
+                <h1>Generated MCQs</h1>
+                <p class="studypasa-file-info">From file: <strong>{{ filename }}</strong></p>
+            </div>
+            
+            <div class="studypasa-quiz-metrics">
+                <span class="studypasa-total-count">Total Questions: {{ mcqs|length }}</span>
+
+                <span class="studypasa-score-display">Score: <span id="studypasa-score-counter">0</span>/{{ mcqs|length }}</span>
+            </div>
+            
+            <div class="studypasa-quiz-wrapper">
+                {% for mcq in mcqs %}
+                <div class="studypasa-question-item" data-question-index="{{ loop.index0 }}">
+                    <div class="studypasa-question-number">
+                        Question {{ loop.index }}
+                    </div>
+                    
+                    <div class="studypasa-question-content">
+                        {{ mcq.question }}
+                    </div>
+                    
+                    <div class="studypasa-answer-options">
+                        {% for option in mcq.options %}
+                        <button class="studypasa-option-button" 
+                                data-option-index="{{ loop.index0 }}"
+                                data-correct-answer="{{ mcq.correct_answer }}">
+                            <span class="studypasa-option-label">{{ ['A', 'B', 'C', 'D'][loop.index0] }}</span>
+                            <span class="studypasa-option-text">{{ option }}</span>
+                        </button>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="studypasa-answer-feedback">
+                        <div class="studypasa-feedback-content">
+                            <span class="studypasa-feedback-icon"></span>
+                            <span class="studypasa-feedback-text"></span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="studypasa-quiz-controls">
+                <button class="studypasa-btn studypasa-btn-secondary" onclick="resetStudyPasaQuiz()">Reset Quiz</button>
+                <a href="{{ url_for('index') }}" class="studypasa-btn studypasa-btn-primary">Generate New Quiz</a>
+            </div>
+        </div>
+
+                    <div class="studypasa-quiz-metrics">
+                <span class="studypasa-total-count">Total Flashcards: {{ flashcards|length }}</span>
+                <span class="studypasa-score-display">Seen: <span id="studypasa-seen-counter">0</span>/{{ flashcards|length }}</span>
+            </div>
+            <!-- Flashcard Section -->
+        <div class="studypasa-flashcard-section">
+            <h2>Flashcards</h2>
+            <div class="studypasa-flashcard-grid">
+                {% for flashcard in flashcards %}
+                <div class="studypasa-flashcard-item" onclick="toggleFlashcard(this, '{{ loop.index0 }}')">
+                    <div class="studypasa-flashcard-front">
+                        <h3>{{ flashcard.front }}</h3>
+                    </div>
+                    <div class="studypasa-flashcard-back">
+                        <p>{{ flashcard.back }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Assistant Chatbot -->
+    <div class="studypasa-assistant-container">
+        <button class="studypasa-assistant-trigger" id="studypasa-assistant-trigger">
+            <img src="https://via.placeholder.com/45x45/667eea/ffffff?text=QP" alt="QuizPasa Assistant" />
+        </button>
+        
+        <div class="studypasa-assistant-panel" id="studypasa-assistant-panel">
+            <div class="studypasa-assistant-header">
+                <h3 class="studypasa-assistant-title">QuizPasa Assistant</h3>
+                <button class="studypasa-assistant-close" id="studypasa-assistant-close">×</button>
+            </div>
+            
+            <div class="studypasa-conversation-area" id="studypasa-conversation-area">
+                <!-- Messages will be populated by JavaScript -->
+            </div>
+            
+            <div class="studypasa-input-area">
+                <textarea id="studypasa-message-input" placeholder="Ask me anything about your study material..."></textarea>
+                <button id="studypasa-send-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize quiz variables
+        let studyPasaScore = 0;
+        const studyPasaTotalQuestions = parseInt('{{ mcqs|length }}');
+        const studyPasaAnsweredQuestions = new Set();
+
+        let studyPasaSeenFlashcards = new Set();
+
+        // Initialize Assistant chatbot variables
+        let studyPasaConversationHistory = [];
+        let studyPasaAssistantOpen = false;
+
+        // Quiz functionality
+        document.querySelectorAll('.studypasa-option-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const questionCard = this.closest('.studypasa-question-item');
+                const questionIndex = parseInt(questionCard.dataset.questionIndex);
+                const selectedOption = parseInt(this.dataset.optionIndex);
+                const correctAnswer = parseInt(this.dataset.correctAnswer);
+                
+                // Prevent multiple answers for the same question
+                if (studyPasaAnsweredQuestions.has(questionIndex)) {
+                    return;
+                }
+                
+                // Mark question as answered
+                studyPasaAnsweredQuestions.add(questionIndex);
+                
+                // Disable all options in this question
+                questionCard.querySelectorAll('.studypasa-option-button').forEach(option => {
+                    option.disabled = true;
+                });
+                
+                // Show feedback
+                const isCorrect = selectedOption === correctAnswer;
+                showStudyPasaFeedback(questionCard, isCorrect, correctAnswer);
+                
+                // Update score
+                if (isCorrect) {
+                    studyPasaScore++;
+                    this.classList.add('studypasa-correct-answer');
+                } else {
+                    this.classList.add('studypasa-wrong-answer');
+                    // Highlight correct answer
+                    questionCard.querySelectorAll('.studypasa-option-button')[correctAnswer].classList.add('studypasa-correct-answer');
+                }
+                
+                // Update score display
+                document.getElementById('studypasa-score-counter').textContent = studyPasaScore;
+            });
+        });
+
+        function showStudyPasaFeedback(questionCard, isCorrect, correctAnswer) {
+            const feedback = questionCard.querySelector('.studypasa-answer-feedback');
+            const feedbackIcon = feedback.querySelector('.studypasa-feedback-icon');
+            const feedbackText = feedback.querySelector('.studypasa-feedback-text');
+            
+            if (isCorrect) {
+                feedbackIcon.textContent = '✅';
+                feedbackText.textContent = 'Correct!';
+                feedback.className = 'studypasa-answer-feedback studypasa-correct-feedback';
+            } else {
+                feedbackIcon.textContent = '❌';
+                feedbackText.textContent = `Wrong! The correct answer is ${['A', 'B', 'C', 'D'][correctAnswer]}.`;
+                feedback.className = 'studypasa-answer-feedback studypasa-incorrect-feedback';
+            }
+            
+            feedback.style.display = 'block';
+        }
+
+        function resetStudyPasaQuiz() {
+            studyPasaScore = 0;
+            studyPasaAnsweredQuestions.clear();
+            document.getElementById('studypasa-score-counter').textContent = '0';
+            studyPasaSeenFlashcards.clear();
+            document.getElementById('studypasa-seen-counter').textContent = '0';
+
+            
+            // Reset all question cards
+            document.querySelectorAll('.studypasa-question-item').forEach(card => {
+                // Re-enable all options
+                card.querySelectorAll('.studypasa-option-button').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('studypasa-correct-answer', 'studypasa-wrong-answer');
+                });
+                
+                // Hide feedback
+                card.querySelector('.studypasa-answer-feedback').style.display = 'none';
+            });
+        }
+
+        // Assistant Chatbot functionality
+        function toggleStudyPasaAssistant() {
+            const panel = document.getElementById('studypasa-assistant-panel');
+            
+            if (studyPasaAssistantOpen) {
+                closeStudyPasaAssistant();
+            } else {
+                openStudyPasaAssistant();
+            }
+        }
+
+        function openStudyPasaAssistant() {
+            const panel = document.getElementById('studypasa-assistant-panel');
+            panel.classList.add('studypasa-panel-active');
+            studyPasaAssistantOpen = true;
+            
+            // Focus on input
+            document.getElementById('studypasa-message-input').focus();
+            
+            // Add welcome message if this is the first time opening
+            if (studyPasaConversationHistory.length === 0) {
+                addStudyPasaMessage('Hi! I\'m QuizPasa, your friendly study assistant! 🎓\n\nI\'m here to help you with:\n• Study techniques and tips\n• Understanding your MCQs and flashcards\n• Learning strategies\n• Academic questions\n\nWhat would you like to know?', 'bot');
+            }
+        }
+
+        function closeStudyPasaAssistant() {
+            const panel = document.getElementById('studypasa-assistant-panel');
+            panel.classList.remove('studypasa-panel-active');
+            studyPasaAssistantOpen = false;
+        }
+
+        function handleStudyPasaKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendStudyPasaMessage();
+            }
+        }
+
+        function addStudyPasaMessage(text, sender) {
+            const messagesContainer = document.getElementById('studypasa-conversation-area');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `studypasa-message-bubble studypasa-${sender}-message`;
+            messageDiv.textContent = text;
+            
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Store in conversation history
+            studyPasaConversationHistory.push({
+                role: sender === 'user' ? 'user' : 'assistant',
+                content: text
+            });
+            
+            // Keep only last 10 messages to prevent memory issues
+            if (studyPasaConversationHistory.length > 10) {
+                studyPasaConversationHistory = studyPasaConversationHistory.slice(-10);
+            }
+        }
+
+        function showStudyPasaTyping() {
+            const messagesContainer = document.getElementById('studypasa-conversation-area');
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'studypasa-typing-indicator';
+            typingDiv.id = 'studypasa-typing-indicator';
+            typingDiv.innerHTML = `
+                QuizPasa is typing...
+                <div class="studypasa-typing-dots">
+                    <div class="studypasa-typing-dot"></div>
+                    <div class="studypasa-typing-dot"></div>
+                    <div class="studypasa-typing-dot"></div>
+                </div>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            return typingDiv;
+        }
+
+        function hideStudyPasaTyping() {
+            const typingDiv = document.getElementById('studypasa-typing-indicator');
+            if (typingDiv) {
+                typingDiv.remove();
+            }
+        }
+
+        async function sendStudyPasaMessage() {
+            const input = document.getElementById('studypasa-message-input');
+            const sendButton = document.getElementById('studypasa-send-button');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message
+            addStudyPasaMessage(message, 'user');
+            
+            // Clear input and disable send button
+            input.value = '';
+            sendButton.disabled = true;
+            
+            // Show typing indicator
+            const typingIndicator = showStudyPasaTyping();
+            
+            try {
+                const response = await fetch('/quizpasa_chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        conversation_history: studyPasaConversationHistory
+                    })
+                });
+                
+                const data = await response.json();
+                
+                // Hide typing indicator
+                hideStudyPasaTyping();
+                
+                if (data.success) {
+                    addStudyPasaMessage(data.message, 'bot');
+                } else {
+                    addStudyPasaMessage(data.message || 'Sorry, I encountered an error. Please try again!', 'bot');
+                }
+                
+            } catch (error) {
+                console.error('QuizPasa error:', error);
+                hideStudyPasaTyping();
+                addStudyPasaMessage('Sorry, I\'m having trouble connecting right now. Please try again!', 'bot');
+            } finally {
+                // Re-enable send button
+                sendButton.disabled = false;
+                input.focus();
+            }
+        }
+
+        function toggleFlashcard(flashcardElement, indexStr) {
+            const index = parseInt(indexStr);
+            flashcardElement.classList.toggle('studypasa-flipped');
+            if (!studyPasaSeenFlashcards.has(index)) {
+                studyPasaSeenFlashcards.add(index);
+                document.getElementById('studypasa-seen-counter').textContent = studyPasaSeenFlashcards.size;
+            }
+        }
+
+        // DOM Content Loaded - Set up event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add click event listener to trigger button
+            const trigger = document.getElementById('studypasa-assistant-trigger');
+            if (trigger) {
+                trigger.addEventListener('click', toggleStudyPasaAssistant);
+            }
+            
+            // Add click event listener to close button
+            const closeButton = document.getElementById('studypasa-assistant-close');
+            if (closeButton) {
+                closeButton.addEventListener('click', closeStudyPasaAssistant);
+            }
+            
+            // Add keypress event listener to input
+            const input = document.getElementById('studypasa-message-input');
+            if (input) {
+                input.addEventListener('keypress', handleStudyPasaKeyPress);
+            }
+            
+            // Add click event listener to send button
+            const sendButton = document.getElementById('studypasa-send-button');
+            if (sendButton) {
+                sendButton.addEventListener('click', sendStudyPasaMessage);
+            }
+
+            // Auto-open the assistant when page loads
+            setTimeout(() => {
+                openStudyPasaAssistant();
+            }, 1000); // 1 second delay for better UX
+        });
+
+        // Close assistant when clicking outside
+        document.addEventListener('click', function(event) {
+            const container = document.querySelector('.studypasa-assistant-container');
+            const panel = document.getElementById('studypasa-assistant-panel');
+            
+            if (studyPasaAssistantOpen && !container.contains(event.target)) {
+                closeStudyPasaAssistant();
+            }
+        });
+    </script>
+</body>
+</html>

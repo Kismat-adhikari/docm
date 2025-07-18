@@ -143,7 +143,7 @@ studypasa/
 ├── templates/
 │   ├── index.html        # Homepage
 │   ├── upload.html       # File upload page
-│   └── quiz.html         # Quiz and flashcard interface
+│   └── quizmc.html         # Quiz and flashcard interface
 ├── static/
 │   ├── style.css         # Application styling
 │   ├── script.js         # Frontend JavaScript

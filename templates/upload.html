@@ -4,13 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload File - StudyPasa</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
     <div class="studypasa-upload-container">
         <div class="studypasa-upload-section">
-            <h1>Upload Your Document</h1>
-            <p>Upload a PDF, DOCX, PPTX, or image file to generate MCQs</p>
+            <div class="studypasa-header">
+                <h1>Upload Your Study Material</h1>
+                <p>Transform your documents into interactive study tools with Mr. Pasa</p>
+                
+                <div class="studypasa-process-steps">
+                    <div class="studypasa-step">
+                        <span class="studypasa-step-icon">📤</span>
+                        <div class="studypasa-step-text">Upload Document</div>
+                    </div>
+                    <div class="studypasa-step">
+                        <span class="studypasa-step-icon">⚡</span>
+                        <div class="studypasa-step-text">AI Processing</div>
+                    </div>
+                    <div class="studypasa-step">
+                        <span class="studypasa-step-icon">🎯</span>
+                        <div class="studypasa-step-text">Get Study Tools</div>
+                    </div>
+                </div>
+            </div>
             
             <!-- Flash messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
@@ -40,7 +57,7 @@
                 </div>
                 
                 <button type="submit" class="studypasa-btn studypasa-btn-primary" id="studypasa-submit-btn" disabled>
-                    <span class="studypasa-btn-text">Generate MCQs</span>
+                    <span class="studypasa-btn-text">Generate Study Tools</span>
                     <div class="studypasa-spinner" style="display: none;"></div>
                 </button>
             </form>
@@ -55,6 +72,27 @@
                     <span class="studypasa-format-item">📸 JPG</span>
                     <span class="studypasa-format-item">🖼️ TIFF</span>
                     <span class="studypasa-format-item">📱 BMP</span>
+                </div>
+            </div>
+            
+            <div class="studypasa-features">
+                <h3>What You'll Get After Upload</h3>
+                <div class="studypasa-feature-grid">
+                    <div class="studypasa-feature">
+                        <span class="studypasa-feature-icon">❓</span>
+                        <div class="studypasa-feature-title">Smart MCQs</div>
+                        <div class="studypasa-feature-desc">Auto-generated multiple choice questions from your content</div>
+                    </div>
+                    <div class="studypasa-feature">
+                        <span class="studypasa-feature-icon">🎴</span>
+                        <div class="studypasa-feature-title">Interactive Flashcards</div>
+                        <div class="studypasa-feature-desc">Key concepts turned into memorable flashcards</div>
+                    </div>
+                    <div class="studypasa-feature">
+                        <span class="studypasa-feature-icon">🤖</span>
+                        <div class="studypasa-feature-title">Mr. Pasa</div>
+                        <div class="studypasa-feature-desc">AI chatbot to discuss questions, explain concepts, and provide study guidance</div>
+                    </div>
                 </div>
             </div>
         </div>

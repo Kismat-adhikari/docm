@@ -134,6 +134,7 @@ def validate_file_content(file_path, file_ext):
                     # Check if image is too small for reliable OCR
                     if img.size[0] < 50 or img.size[1] < 50:
                         return False, 'The image is too small for text extraction'
+                    # For images, allow validation to pass so OCR can be applied
                     return True, ''
             except Exception as e:
                 return False, f'The image appears to be corrupted or in an invalid format: {str(e)}'
@@ -803,13 +804,55 @@ def upload():
             
             try:
                 if file_ext == 'pdf':
+                    # First try to extract text normally
                     text = extract_text_from_pdf(file_path)
+                    
+                    # If minimal text was extracted, try full page OCR
+                    if not text.strip() or len(text.strip()) < 50:
+                        print("Minimal text found in PDF, attempting full page OCR...")
+                        if setup_tesseract():
+                            try:
+                                images = convert_from_path(file_path, dpi=300)
+                                ocr_text = ""
+                                
+                                for i, image in enumerate(images):
+                                    processed_img = preprocess_image_for_ocr(image)
+                                    page_text = pytesseract.image_to_string(processed_img, lang='eng', config='--psm 6')
+                                    if page_text.strip():
+                                        ocr_text += f"\n[Page {i + 1}]:\n{page_text}\n"
+                                        print(f"OCR Page {i + 1}: Extracted {len(page_text)} characters")
+                                
+                                if ocr_text.strip():
+                                    text = ocr_text
+                                    print("Successfully extracted text using full page OCR")
+                            except Exception as e:
+                                print(f"Full page OCR failed: {e}")
+                
                 elif file_ext in ['docx', 'doc']:
                     text = extract_text_from_docx(file_path)
+                    # If minimal text was found, try OCR on any images in the document
+                    if not text.strip() or len(text.strip()) < 50:
+                        if setup_tesseract() and file_ext == 'docx':
+                            image_text = extract_images_from_docx(file_path)
+                            if image_text:
+                                text = image_text
+                
                 elif file_ext == 'pptx':
                     text = extract_text_from_pptx(file_path)
+                    # If minimal text was found, try OCR on any images in the presentation
+                    if not text.strip() or len(text.strip()) < 50:
+                        if setup_tesseract():
+                            image_text = extract_images_from_pptx(file_path)
+                            if image_text:
+                                text = image_text
+                
                 elif file_ext in ['png', 'jpg', 'jpeg', 'tiff', 'bmp']:
-                    text = extract_text_from_image(file_path)
+                    if setup_tesseract():
+                        text = extract_text_from_image(file_path)
+                    else:
+                        flash('Tesseract OCR is not installed. Please install it to process images.', 'error')
+                        os.remove(file_path)
+                        return redirect(request.url)
                 
                 print(f"Total extracted text length: {len(text)} characters")
                 
@@ -977,10 +1020,10 @@ def quizpasa_chat_simple():
 
 
 
-if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-
 # if __name__ == '__main__':
 #     port = int(os.environ.get('PORT', 5000))
-#     app.run(host='0.0.0.0', port=port, debug=True)
+#     app.run(host='0.0.0.0', port=port)
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=True)

@@ -1,4 +1,4 @@
-        // Initialize quiz variables
+// Initialize quiz variables
         let studyPasaScore = 0;
         const studyPasaTotalQuestions = parseInt('{{ mcqs|length }}');
         const studyPasaAnsweredQuestions = new Set();
@@ -199,7 +199,7 @@
                     },
                     body: JSON.stringify({
                         message: message,
-                        history: studyPasaConversationHistory.slice(-8) // Send last 8 messages for context
+                        conversation_history: studyPasaConversationHistory
                     })
                 });
                 
